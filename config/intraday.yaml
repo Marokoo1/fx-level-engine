@@ -1,0 +1,15 @@
+name: intraday
+build_timeframe: M30
+trigger_timeframe: M1
+holding_profile: minutes_to_1h
+max_holding_minutes: 60
+max_long_levels: 2
+max_short_levels: 2
+level_ttl_hours: 12
+entry_mode: confirmation
+stop_mode: zone_buffer
+target_mode: fixed
+fixed_target_pips: 10
+zone_buffer_pips: 2
+min_level_score: 0.0
+use_higher_context: false

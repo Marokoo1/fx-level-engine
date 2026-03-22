@@ -1,0 +1,18 @@
+project_name: fx-level-engine
+timezone: Europe/London
+base_currency: USD
+store_format: parquet
+log_level: INFO
+paper_trading: true
+
+ib:
+  host: 127.0.0.1
+  port: 7497
+  client_id: 11
+
+paths:
+  raw_data: data/raw
+  processed_data: data/processed
+  levels: data/levels
+  state: data/state
+  logs: logs

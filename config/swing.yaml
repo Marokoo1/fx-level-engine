@@ -1,0 +1,16 @@
+name: swing
+build_timeframe: H4
+trigger_timeframe: M30
+holding_profile: hours_to_2_days
+max_holding_hours: 48
+max_long_levels: 2
+max_short_levels: 2
+level_ttl_hours: 96
+entry_mode: confirmation
+stop_mode: zone_buffer
+target_mode: rr
+rr_target: 1.5
+zone_buffer_pips: 5
+min_level_score: 0.0
+use_higher_context: true
+higher_context_strategy: invest

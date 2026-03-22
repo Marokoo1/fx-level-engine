@@ -1,0 +1,14 @@
+name: invest
+build_timeframe: D1
+trigger_timeframe: H4
+holding_profile: several_days
+max_holding_days: 10
+max_long_levels: 2
+max_short_levels: 2
+level_ttl_hours: 720
+entry_mode: confirmation
+stop_mode: zone_buffer
+target_mode: open
+zone_buffer_pips: 12
+min_level_score: 0.0
+use_higher_context: false

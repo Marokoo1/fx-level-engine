@@ -1,0 +1,6 @@
+ib-insync
+pandas
+pyarrow
+pyyaml
+python-dotenv
+loguru

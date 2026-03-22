@@ -1,0 +1,17 @@
+intraday:
+  - EURUSD
+  - AUDUSD
+  - USDCAD
+  - USDJPY
+
+swing:
+  - EURUSD
+  - AUDUSD
+  - USDCAD
+  - USDJPY
+
+invest:
+  - EURUSD
+  - AUDUSD
+  - USDCAD
+  - USDJPY

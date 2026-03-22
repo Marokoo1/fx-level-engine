@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.vscode/
+.idea/
+logs/*.log
+data/raw/*
+data/processed/*
+data/levels/*
+data/state/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/levels/.gitkeep
+!data/state/.gitkeep
+.ipynb_checkpoints/
+.DS_Store
