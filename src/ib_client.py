@@ -57,6 +57,10 @@ class IBClient:
 
     @staticmethod
     def _ib_duration(timeframe: str, bars: int) -> str:
+        """
+        Approximate duration string accepted by IB.
+        Better to slightly overshoot than undershoot.
+        """
         if timeframe == "M1":
             days = max(1, math.ceil(bars / (24 * 60)) + 2)
             return f"{days} D"
@@ -76,8 +80,8 @@ class IBClient:
             days = max(30, math.ceil(bars / 6) + 40)
             return f"{days} D"
         if timeframe == "D1":
-            days = max(180, bars + 50)
-            return f"{days} D"
+            years = max(1, math.ceil((bars + 50) / 365))
+            return f"{years} Y"
         raise ValueError(f"Unsupported timeframe: {timeframe}")
 
     def fetch_historical_fx_bars(
