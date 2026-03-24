@@ -1,6 +1,6 @@
-ib-insync
-pandas
-pyarrow
-pyyaml
-python-dotenv
-loguru
+pandas>=2.2.0
+numpy>=1.26.0
+PyYAML>=6.0.1
+python-dotenv>=1.0.1
+pyarrow>=16.0.0
+loguru>=0.7.2

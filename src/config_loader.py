@@ -1,26 +1,19 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
+
+import pandas as pd
 import yaml
 
-CONFIG_DIR = Path("config")
+
+def load_settings(path: str | Path = "config/settings.yaml") -> dict[str, Any]:
+    with open(path, "r", encoding="utf-8") as f:
+        return yaml.safe_load(f)
 
 
-def load_yaml(path: Path) -> dict:
-    if not path.exists():
-        raise FileNotFoundError(f"Config file not found: {path}")
-    with path.open("r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-    return data or {}
-
-
-def load_settings() -> dict:
-    return load_yaml(CONFIG_DIR / "settings.yaml")
-
-
-def load_instruments() -> dict:
-    return load_yaml(CONFIG_DIR / "instruments.yaml")
-
-
-def load_strategy_config(strategy_name: str) -> dict:
-    return load_yaml(CONFIG_DIR / f"{strategy_name}.yaml")
+def load_symbols(path: str | Path = "input/symbols.csv") -> list[str]:
+    df = pd.read_csv(path)
+    if "symbol" not in df.columns:
+        raise ValueError("symbols.csv must contain a 'symbol' column")
+    return df["symbol"].dropna().astype(str).tolist()

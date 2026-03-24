@@ -2,41 +2,30 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Literal, Optional
-
-Direction = Literal["long", "short"]
-ZoneType = Literal["cumulation", "aggressive_initiation", "strong_rejection"]
-LevelStatus = Literal["new", "active", "tested", "consumed", "invalid"]
 
 
 @dataclass
-class Zone:
-    zone_id: str
-    instrument: str
-    timeframe: str
-    zone_type: ZoneType
-    direction_bias: Optional[Direction]
+class LevelRecord:
+    asof_time: datetime
+    symbol: str
+    table_type: str
+    level_family: str
+    level_period: str
+    level_name: str
+    direction: str
+    level_price: float
     zone_low: float
     zone_high: float
-    poc: Optional[float]
-    created_at: datetime
-    strength_score: float = 0.0
-
-
-@dataclass
-class Level:
-    level_id: str
-    instrument: str
-    strategy: str
+    last_price: float
+    distance_pips: float
+    distance_pips_abs: float
+    is_above_price: bool
+    is_below_price: bool
+    status: str
+    touch_count: int
+    first_touch_time: str | None
+    first_cross_time: str | None
+    source_data: str
     build_timeframe: str
-    trigger_timeframe: str
-    direction: Direction
-    rank: int
-    price: float
-    zone_low: float
-    zone_high: float
-    source_setup_type: ZoneType
-    created_at: datetime
-    status: LevelStatus = "new"
-    touch_count: int = 0
-    strength_score: float = 0.0
+    entry_timeframe: str
+    notes: str

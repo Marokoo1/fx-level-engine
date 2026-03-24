@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-import sys
+from pathlib import Path
+
 from loguru import logger
 
 
-def configure_logger(level: str = "INFO"):
+def configure_logger(log_dir: str | Path = "logs"):
+    Path(log_dir).mkdir(parents=True, exist_ok=True)
     logger.remove()
-    logger.add(
-        sys.stdout,
-        level=level.upper(),
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
-               "<level>{level: <8}</level> | "
-               "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
-               "<level>{message}</level>",
-    )
+    logger.add(lambda msg: print(msg, end=""))
+    logger.add(Path(log_dir) / "fx_level_engine.log", rotation="5 MB", retention=10)
     return logger

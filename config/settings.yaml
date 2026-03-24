@@ -1,18 +1,58 @@
-project_name: fx-level-engine
-timezone: Europe/London
-base_currency: USD
-store_format: parquet
-log_level: INFO
-paper_trading: true
+project:
+  name: fx-level-engine
+  timezone: UTC
+  default_source: fxcm
+
+fxcm:
+  user_env: FXCM_USER
+  password_env: FXCM_PASSWORD
+  url_env: FXCM_URL
+  connection_env: FXCM_CONNECTION
+  session_id_env: FXCM_SESSION_ID
+  pin_env: FXCM_PIN
+
+storage:
+  raw_dir: data/raw/fxcm
+  levels_dir: data/levels
+  tables_dir: data/tables
+
+history:
+  download_timeframes:
+    - m30
+    - D1
+  bars:
+    m30: 12000
+    D1: 1200
+
+poc:
+  source_timeframe: m30
+  bucket_mode: fixed_pips
+  bucket_size_pips:
+    default: 1.0
+    JPY: 0.1
+  value_area_pct: 0.70
+  min_bars_per_profile: 10
 
 ib:
-  host: 127.0.0.1
-  port: 7497
-  client_id: 11
+  weekly_anchor: first_day
+  monthly_anchor: first_week
+  yearly_anchor: first_two_months
+  multipliers:
+    - 1.0
+    - 1.5
+    - 2.0
+    - 3.0
 
-paths:
-  raw_data: data/raw
-  processed_data: data/processed
-  levels: data/levels
-  state: data/state
-  logs: logs
+tables:
+  intraday:
+    update_frequency: daily
+    included_periods: [W, M, Y]
+    build_timeframe: M30
+  swing:
+    update_frequency: weekly
+    included_periods: [W, M, Y]
+    build_timeframe: H4
+  invest:
+    update_frequency: biweekly
+    included_periods: [W, M, Y]
+    build_timeframe: D1
