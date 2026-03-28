@@ -1,0 +1,3 @@
+asof_time,table_type,instrument,current_price,res1_price,res1_pips,res1_conf,res2_price,res2_pips,res2_conf,sup1_price,sup1_pips,sup1_conf,sup2_price,sup2_pips,sup2_conf,selected_levels,confluence_hits,signal_summary
+2026-03-28 02:31:53.681317+00:00,poc_matrix,EUR/USD,1.15728,,,,,,,,,,,,,0,0,
+2026-03-28 02:31:54.891068+00:00,poc_matrix,USD/JPY,159.231,,,,,,,147.756,-1147.55,,,,,1,0,Sup1 Y_POC (fresh) @ 147.756 [-1147.55 pips]

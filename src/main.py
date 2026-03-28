@@ -46,7 +46,7 @@ def main() -> None:
 
     if args.mode == "export-all":
         df = build_all_levels(settings, symbols)
-        result = export_tables(df, settings, ["intraday", "swing", "invest"])
+        result = export_tables(df, settings)
         pprint(result)
         return
 

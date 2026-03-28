@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 def due_tables(now: datetime | None = None) -> list[str]:
     now = now or datetime.now(timezone.utc)
-    due = ["intraday"]
+    due = ["intraday", "poc_matrix", "ib_matrix"]
     # Weekly refresh on Monday UTC
     if now.weekday() == 0:
         due.append("swing")

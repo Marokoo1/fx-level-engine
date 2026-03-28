@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Swing view</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+    --bg: #07111d;
+    --bg-soft: #0d1726;
+    --surface: rgba(12, 18, 32, 0.88);
+    --surface-2: rgba(17, 24, 39, 0.96);
+    --border: rgba(148, 163, 184, 0.16);
+    --text: #e5eef8;
+    --muted: #98a8be;
+    --accent: #7dd3fc;
+    --accent-strong: #38bdf8;
+    --fresh: #86efac;
+    --tested: #fde68a;
+    --crossed: #fda4af;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 32%),
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.09), transparent 28%),
+        linear-gradient(180deg, #050b14 0%, var(--bg) 45%, #09121d 100%);
+    font-family: "Aptos", "Segoe UI", "Trebuchet MS", sans-serif;
+}
+.shell {
+    max-width: 1560px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+.hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: flex-end;
+    margin-bottom: 18px;
+}
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.12);
+    color: #c8efff;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.title {
+    margin: 14px 0 10px;
+    font-size: clamp(30px, 3.8vw, 58px);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+}
+.subtitle {
+    margin: 0;
+    color: var(--muted);
+    max-width: 68ch;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.hero-meta {
+    text-align: right;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+.hero-meta strong {
+    color: var(--text);
+}
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 24px 0 18px;
+}
+.metric-card {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(11, 16, 28, 0.94));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 16px 16px 14px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+}
+.metric-label {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+}
+.metric-value {
+    margin-top: 8px;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+.metric-note {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 13px;
+}
+.toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 18px 0 14px;
+}
+.search-wrap {
+    flex: 1 1 360px;
+    position: relative;
+}
+.search-wrap input {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: rgba(6, 12, 20, 0.76);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 14px 16px 14px 44px;
+    font-size: 14px;
+    outline: none;
+}
+.search-wrap input:focus {
+    border-color: rgba(125, 211, 252, 0.6);
+    box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.12);
+}
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+}
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    font-size: 13px;
+}
+.status-legend {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 72px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.badge.fresh {
+    background: rgba(134, 239, 172, 0.16);
+    color: var(--fresh);
+    border-color: rgba(134, 239, 172, 0.25);
+}
+.badge.tested {
+    background: rgba(253, 230, 138, 0.16);
+    color: var(--tested);
+    border-color: rgba(253, 230, 138, 0.25);
+}
+.badge.crossed {
+    background: rgba(253, 164, 175, 0.16);
+    color: var(--crossed);
+    border-color: rgba(253, 164, 175, 0.25);
+}
+.badge.marker {
+    background: rgba(125, 211, 252, 0.16);
+    color: var(--accent);
+    border-color: rgba(125, 211, 252, 0.25);
+}
+.table-shell {
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(8, 14, 25, 0.88), rgba(5, 10, 18, 0.92));
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+.table-scroll {
+    overflow: auto;
+    max-height: min(72vh, 960px);
+}
+.report-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 100%;
+}
+.report-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(10, 16, 28, 0.98));
+    color: var(--accent);
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 15px 14px;
+    border-bottom: 1px solid rgba(125, 211, 252, 0.14);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+.report-table tbody td {
+    padding: 14px 14px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    color: var(--text);
+    vertical-align: top;
+    white-space: nowrap;
+}
+.report-table tbody tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.015);
+}
+.report-table tbody tr:hover td {
+    background: rgba(125, 211, 252, 0.08);
+}
+.report-table td.number-cell {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.report-table td.symbol-cell {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+.report-table td.status-cell {
+    white-space: nowrap;
+}
+.report-table th.sorted-asc::after {
+    content: " ^";
+    color: var(--accent-strong);
+}
+.report-table th.sorted-desc::after {
+    content: " v";
+    color: var(--accent-strong);
+}
+.empty-state {
+    padding: 28px;
+    color: var(--muted);
+}
+.footer-note {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+@media (max-width: 900px) {
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .hero-meta {
+        text-align: left;
+    }
+    .table-scroll {
+        max-height: none;
+    }
+}
+</style>
+</head>
+<body>
+    <div class="shell">
+        <section class="hero">
+            <div>
+                <div class="eyebrow">FX level engine dashboard</div>
+                <h1 class="title">Swing view</h1>
+                <p class="subtitle">Offline dashboard snapshot generated from local parquet data.</p>
+            </div>
+            <div class="hero-meta">
+                <div><strong>Mode:</strong> offline self-contained report</div>
+                <div><strong>Rows:</strong> 2</div>
+                <div><strong>Columns:</strong> 23</div>
+            </div>
+        </section>
+
+        <section class="metrics">
+            <div class="metric-card">
+            <div class="metric-label">Symbols</div>
+            <div class="metric-value">2</div>
+            <div class="metric-note">unique instruments</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Rows</div>
+            <div class="metric-value">2</div>
+            <div class="metric-note">rows in this view</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Fresh</div>
+            <div class="metric-value">27</div>
+            <div class="metric-note">fresh opportunities</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Tested</div>
+            <div class="metric-value">3</div>
+            <div class="metric-note">already tested</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Crossed</div>
+            <div class="metric-value">9</div>
+            <div class="metric-note">crossed or invalidated</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Updated</div>
+            <div class="metric-value">2026-03-28 02:31 UTC</div>
+            <div class="metric-note">latest snapshot</div>
+        </div>
+        </section>
+
+        <section class="toolbar">
+            <div class="search-wrap">
+                <span class="search-icon">Search</span>
+                <input id="table-search" type="search" placeholder="Search instrument, level, price or status">
+            </div>
+            <div class="pill" id="row-count">Showing 2 rows</div>
+            <div class="status-legend">
+                <span class="badge fresh">Fresh</span>
+                <span class="badge tested">Tested</span>
+                <span class="badge crossed">Crossed</span>
+            </div>
+        </section>
+
+        <section class="table-shell">
+            <div class="table-scroll">
+                <table id="levels_table" class="report-table"><thead><tr><th data-col="asof_time" data-type="date">asof time</th><th data-col="symbol" data-type="text">symbol</th><th data-col="current_price" data-type="number">current price</th><th data-col="nearest_ib" data-type="text">nearest ib</th><th data-col="nearest_ib_price" data-type="number">nearest ib price</th><th data-col="nearest_ib_pips" data-type="number">nearest ib pips</th><th data-col="nearest_ib_status" data-type="status">nearest ib status</th><th data-col="nearest_poc" data-type="text">nearest poc</th><th data-col="nearest_poc_price" data-type="number">nearest poc price</th><th data-col="nearest_poc_pips" data-type="number">nearest poc pips</th><th data-col="nearest_poc_status" data-type="status">nearest poc status</th><th data-col="nearest_support" data-type="text">nearest support</th><th data-col="nearest_support_price" data-type="number">nearest support price</th><th data-col="nearest_support_pips" data-type="number">nearest support pips</th><th data-col="nearest_support_status" data-type="status">nearest support status</th><th data-col="nearest_resistance" data-type="text">nearest resistance</th><th data-col="nearest_resistance_price" data-type="number">nearest resistance price</th><th data-col="nearest_resistance_pips" data-type="number">nearest resistance pips</th><th data-col="nearest_resistance_status" data-type="status">nearest resistance status</th><th data-col="fresh_levels" data-type="number">fresh levels</th><th data-col="tested_levels" data-type="number">tested levels</th><th data-col="crossed_levels" data-type="number">crossed levels</th><th data-col="total_levels" data-type="number">total levels</th></tr></thead><tbody><tr><td data-sort="2026-03-28 02:31:53.772446+00:00">2026-03-28 02:31 UTC</td><td class="symbol-cell" data-sort="EUR/USD">EUR/USD</td><td class="number-cell" data-sort="1.15728">1.15728</td><td data-sort="W_IB_HIGH">W_IB_HIGH</td><td class="number-cell" data-sort="1.1639849999999998">1.16398</td><td class="number-cell" data-sort="67.05">67.05</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td data-sort="M_POC">M_POC</td><td class="number-cell" data-sort="1.1803499999999993">1.18035</td><td class="number-cell" data-sort="230.7">230.70</td><td class="status-cell" data-sort="tested"><span class="badge tested">tested</span></td><td data-sort="W_IB_LOW">W_IB_LOW</td><td class="number-cell" data-sort="1.14845">1.14845</td><td class="number-cell" data-sort="-88.3">-88.30</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td data-sort="W_IB_HIGH">W_IB_HIGH</td><td class="number-cell" data-sort="1.1639849999999998">1.16398</td><td class="number-cell" data-sort="67.05">67.05</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td class="number-cell" data-sort="7">7</td><td class="number-cell" data-sort="2">2</td><td class="number-cell" data-sort="4">4</td><td class="number-cell" data-sort="13">13</td></tr>
+<tr><td data-sort="2026-03-28 02:31:55.004657+00:00">2026-03-28 02:31 UTC</td><td class="symbol-cell" data-sort="USD/JPY">USD/JPY</td><td class="number-cell" data-sort="159.231">159.231</td><td data-sort="W_IB_HIGH">W_IB_HIGH</td><td class="number-cell" data-sort="159.65949999999998">159.659</td><td class="number-cell" data-sort="42.85">42.85</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td data-sort="W_POC">W_POC</td><td class="number-cell" data-sort="159.23650000000828">159.237</td><td class="number-cell" data-sort="0.55">0.55</td><td class="status-cell" data-sort="crossed"><span class="badge crossed">crossed</span></td><td data-sort="W_IB_LOW">W_IB_LOW</td><td class="number-cell" data-sort="158.019">158.019</td><td class="number-cell" data-sort="-121.2">-121.20</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td data-sort="W_IB_HIGH">W_IB_HIGH</td><td class="number-cell" data-sort="159.65949999999998">159.659</td><td class="number-cell" data-sort="42.85">42.85</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td class="number-cell" data-sort="20">20</td><td class="number-cell" data-sort="1">1</td><td class="number-cell" data-sort="5">5</td><td class="number-cell" data-sort="26">26</td></tr></tbody></table>
+            </div>
+        </section>
+
+        <div class="footer-note">
+            Tip: click any column header to sort. The HTML is fully self-contained, so it works offline and does not rely on CDN assets.
+        </div>
+    </div>
+
+<script>
+(function() {
+    const table = document.getElementById('levels_table');
+    const search = document.getElementById('table-search');
+    const rowCount = document.getElementById('row-count');
+    if (!table) {
+        return;
+    }
+
+    const tbody = table.tBodies[0];
+    const headers = Array.from(table.tHead.rows[0].cells);
+    let sortState = { index: -1, direction: 1 };
+    let allRows = Array.from(tbody.rows);
+
+    function normalize(value, type) {
+        const raw = (value ?? '').toString().trim();
+        if (!raw) {
+            return '';
+        }
+        if (type === 'number') {
+            const parsed = parseFloat(raw.replace(/[^0-9+\-\.]/g, ''));
+            return Number.isNaN(parsed) ? Number.NEGATIVE_INFINITY : parsed;
+        }
+        if (type === 'date') {
+            const parsed = Date.parse(raw);
+            return Number.isNaN(parsed) ? raw.toLowerCase() : parsed;
+        }
+        if (type === 'status') {
+            return raw.toLowerCase();
+        }
+        return raw.toLowerCase();
+    }
+
+    function renderRows(rows) {
+        tbody.replaceChildren(...rows);
+        allRows = rows;
+    }
+
+    function updateRowCount() {
+        const visible = allRows.filter(row => row.style.display !== 'none').length;
+        rowCount.textContent = 'Showing ' + visible + ' / ' + allRows.length + ' rows';
+    }
+
+    function sortBy(index) {
+        const header = headers[index];
+        const type = header.dataset.type || 'text';
+        const direction = sortState.index === index ? -sortState.direction : 1;
+        sortState = { index, direction };
+
+        headers.forEach(th => {
+            th.classList.remove('sorted-asc', 'sorted-desc');
+        });
+        header.classList.add(direction === 1 ? 'sorted-asc' : 'sorted-desc');
+
+        const rows = Array.from(allRows);
+        rows.sort((a, b) => {
+            const left = normalize(a.cells[index].dataset.sort || a.cells[index].textContent, type);
+            const right = normalize(b.cells[index].dataset.sort || b.cells[index].textContent, type);
+            if (left < right) return -1 * direction;
+            if (left > right) return 1 * direction;
+            return 0;
+        });
+
+        renderRows(rows);
+        applyFilter();
+    }
+
+    function applyFilter() {
+        const query = search.value.trim().toLowerCase();
+        allRows.forEach(row => {
+            const match = !query || row.textContent.toLowerCase().includes(query);
+            row.style.display = match ? '' : 'none';
+        });
+        updateRowCount();
+    }
+
+    headers.forEach((th, index) => {
+        th.addEventListener('click', () => sortBy(index));
+    });
+
+    search.addEventListener('input', applyFilter);
+    applyFilter();
+})();
+</script>
+</body>
+</html>

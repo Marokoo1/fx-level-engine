@@ -56,3 +56,45 @@ tables:
     update_frequency: biweekly
     included_periods: [W, M, Y]
     build_timeframe: D1
+
+matrix_tables:
+  poc_matrix:
+    enabled: true
+    title: Intraday POC matrix
+    source_table_type: intraday
+    source_families: [POC]
+    source_periods: [W, M, Y]
+    fresh_only: true
+    max_levels_per_side: 2
+    max_distance_pips:
+      default: 1000
+      JPY: 2000
+    min_side_separation_pips:
+      default: 0
+      JPY: 0
+    confluence:
+      enabled: true
+      family: IB
+      tolerance_pips:
+        default: 5
+        JPY: 0.5
+  ib_matrix:
+    enabled: true
+    title: Intraday IB matrix
+    source_table_type: intraday
+    source_families: [IB]
+    source_periods: [W, M, Y]
+    fresh_only: true
+    max_levels_per_side: 2
+    max_distance_pips:
+      default: 1000
+      JPY: 2000
+    min_side_separation_pips:
+      default: 0
+      JPY: 0
+    confluence:
+      enabled: true
+      family: POC
+      tolerance_pips:
+        default: 5
+        JPY: 0.5
