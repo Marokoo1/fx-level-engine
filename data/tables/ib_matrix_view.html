@@ -18,6 +18,12 @@
     --fresh: #86efac;
     --tested: #fde68a;
     --crossed: #fda4af;
+    --blocked: #fda4af;
+    --open: #86efac;
+    --watch: #93c5fd;
+    --low: #cbd5e1;
+    --medium: #fde68a;
+    --high: #fca5a5;
 }
 * {
     box-sizing: border-box;
@@ -190,6 +196,36 @@ body {
     color: var(--accent);
     border-color: rgba(125, 211, 252, 0.25);
 }
+.badge.open {
+    background: rgba(134, 239, 172, 0.16);
+    color: var(--open);
+    border-color: rgba(134, 239, 172, 0.25);
+}
+.badge.blocked {
+    background: rgba(253, 164, 175, 0.16);
+    color: var(--blocked);
+    border-color: rgba(253, 164, 175, 0.25);
+}
+.badge.watch {
+    background: rgba(147, 197, 253, 0.16);
+    color: var(--watch);
+    border-color: rgba(147, 197, 253, 0.25);
+}
+.badge.low {
+    background: rgba(203, 213, 225, 0.12);
+    color: var(--low);
+    border-color: rgba(203, 213, 225, 0.18);
+}
+.badge.medium {
+    background: rgba(253, 230, 138, 0.16);
+    color: var(--medium);
+    border-color: rgba(253, 230, 138, 0.25);
+}
+.badge.high {
+    background: rgba(252, 165, 165, 0.16);
+    color: var(--high);
+    border-color: rgba(252, 165, 165, 0.25);
+}
 .table-shell {
     border: 1px solid var(--border);
     border-radius: 22px;
@@ -236,6 +272,12 @@ body {
 .report-table tbody tr:hover td {
     background: rgba(125, 211, 252, 0.08);
 }
+.report-table tbody tr.row-blocked td {
+    background: rgba(127, 29, 29, 0.22);
+}
+.report-table tbody tr.row-watch td {
+    background: rgba(30, 64, 175, 0.14);
+}
 .report-table td.number-cell {
     text-align: right;
     font-variant-numeric: tabular-nums;
@@ -246,6 +288,15 @@ body {
 }
 .report-table td.status-cell {
     white-space: nowrap;
+}
+.report-table td.text-cell {
+    white-space: normal;
+    min-width: 180px;
+    line-height: 1.45;
+}
+.report-table td.level-list-cell {
+    min-width: 220px;
+    max-width: 280px;
 }
 .report-table th.sorted-asc::after {
     content: " ^";
@@ -289,25 +340,25 @@ body {
             </div>
             <div class="hero-meta">
                 <div><strong>Mode:</strong> offline self-contained report</div>
-                <div><strong>Rows:</strong> 2</div>
-                <div><strong>Columns:</strong> 14</div>
+                <div><strong>Rows:</strong> 15</div>
+                <div><strong>Columns:</strong> 6</div>
             </div>
         </section>
 
         <section class="metrics">
             <div class="metric-card">
             <div class="metric-label">Instruments</div>
-            <div class="metric-value">2</div>
+            <div class="metric-value">15</div>
             <div class="metric-note">unique instruments</div>
         </div>
 <div class="metric-card">
             <div class="metric-label">Rows</div>
-            <div class="metric-value">2</div>
+            <div class="metric-value">15</div>
             <div class="metric-note">rows in this view</div>
         </div>
 <div class="metric-card">
             <div class="metric-label">Selected</div>
-            <div class="metric-value">8</div>
+            <div class="metric-value">0</div>
             <div class="metric-note">filled support/resistance slots</div>
         </div>
 <div class="metric-card">
@@ -317,7 +368,7 @@ body {
         </div>
 <div class="metric-card">
             <div class="metric-label">Updated</div>
-            <div class="metric-value">2026-03-28 02:31 UTC</div>
+            <div class="metric-value">2026-03-28 17:31 UTC</div>
             <div class="metric-note">latest snapshot</div>
         </div>
         </section>
@@ -327,7 +378,7 @@ body {
                 <span class="search-icon">Search</span>
                 <input id="table-search" type="search" placeholder="Search instrument, level, price or status">
             </div>
-            <div class="pill" id="row-count">Showing 2 rows</div>
+            <div class="pill" id="row-count">Showing 15 rows</div>
             <div class="status-legend">
                 <span class="badge fresh">Fresh</span>
                 <span class="badge tested">Tested</span>
@@ -337,8 +388,21 @@ body {
 
         <section class="table-shell">
             <div class="table-scroll">
-                <table id="levels_table" class="report-table"><thead><tr><th data-col="instrument" data-type="text">instrument</th><th data-col="current_price" data-type="number">current price</th><th data-col="res1_price" data-type="number">res1 price</th><th data-col="res1_pips" data-type="number">res1 pips</th><th data-col="res1_conf" data-type="status">res1 conf</th><th data-col="res2_price" data-type="number">res2 price</th><th data-col="res2_pips" data-type="number">res2 pips</th><th data-col="res2_conf" data-type="status">res2 conf</th><th data-col="sup1_price" data-type="number">sup1 price</th><th data-col="sup1_pips" data-type="number">sup1 pips</th><th data-col="sup1_conf" data-type="status">sup1 conf</th><th data-col="sup2_price" data-type="number">sup2 price</th><th data-col="sup2_pips" data-type="number">sup2 pips</th><th data-col="sup2_conf" data-type="status">sup2 conf</th></tr></thead><tbody><tr><td class="symbol-cell" data-sort="EUR/USD">EUR/USD</td><td class="number-cell" data-sort="1.15728">1.15728</td><td class="number-cell" data-sort="1.16398">1.16398</td><td class="number-cell" data-sort="67.05">67.05</td><td class="status-cell" data-sort=""></td><td class="number-cell" data-sort="1.16743">1.16743</td><td class="number-cell" data-sort="101.5">101.50</td><td class="status-cell" data-sort=""></td><td class="number-cell" data-sort="1.14845">1.14845</td><td class="number-cell" data-sort="-88.3">-88.30</td><td class="status-cell" data-sort=""></td><td class="number-cell" data-sort="1.13292">1.13292</td><td class="number-cell" data-sort="-243.65">-243.65</td><td class="status-cell" data-sort=""></td></tr>
-<tr><td class="symbol-cell" data-sort="USD/JPY">USD/JPY</td><td class="number-cell" data-sort="159.231">159.231</td><td class="number-cell" data-sort="159.659">159.659</td><td class="number-cell" data-sort="42.85">42.85</td><td class="status-cell" data-sort=""></td><td class="number-cell" data-sort="160.402">160.402</td><td class="number-cell" data-sort="117.05">117.05</td><td class="status-cell" data-sort=""></td><td class="number-cell" data-sort="158.019">158.019</td><td class="number-cell" data-sort="-121.2">-121.20</td><td class="status-cell" data-sort=""></td><td class="number-cell" data-sort="156.755">156.755</td><td class="number-cell" data-sort="-247.6">-247.60</td><td class="status-cell" data-sort=""></td></tr></tbody></table>
+                <table id="levels_table" class="report-table"><thead><tr><th data-col="instrument" data-type="text">instrument</th><th data-col="current_price" data-type="number">current price</th><th data-col="above_levels" data-type="text">above levels</th><th data-col="below_levels" data-type="text">below levels</th><th data-col="selected_levels" data-type="number">selected levels</th><th data-col="confluence_hits" data-type="number">confluence hits</th></tr></thead><tbody><tr><td class="symbol-cell" data-sort="AUD/JPY">AUD/JPY</td><td class="number-cell" data-sort="110.189">110.189</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="AUD/USD">AUD/USD</td><td class="number-cell" data-sort="0.68737">0.68737</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="CAD/JPY">CAD/JPY</td><td class="number-cell" data-sort="115.39">115.390</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="CHF/JPY">CHF/JPY</td><td class="number-cell" data-sort="200.587">200.587</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="EUR/CHF">EUR/CHF</td><td class="number-cell" data-sort="0.91968">0.91968</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="EUR/GBP">EUR/GBP</td><td class="number-cell" data-sort="0.8679">0.86790</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="EUR/JPY">EUR/JPY</td><td class="number-cell" data-sort="184.49">184.490</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="EUR/USD">EUR/USD</td><td class="number-cell" data-sort="1.15113">1.15113</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="GBP/CHF">GBP/CHF</td><td class="number-cell" data-sort="1.06018">1.06018</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="GBP/JPY">GBP/JPY</td><td class="number-cell" data-sort="212.642">212.642</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="GBP/USD">GBP/USD</td><td class="number-cell" data-sort="1.32608">1.32608</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="NZD/USD">NZD/USD</td><td class="number-cell" data-sort="0.57442">0.57442</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="USD/CAD">USD/CAD</td><td class="number-cell" data-sort="1.38936">1.38936</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="USD/CHF">USD/CHF</td><td class="number-cell" data-sort="0.79892">0.79892</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="USD/JPY">USD/JPY</td><td class="number-cell" data-sort="160.293">160.293</td><td class="text-cell level-list-cell" data-sort=""></td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="0">0</td><td data-sort="0">0</td></tr></tbody></table>
             </div>
         </section>
 

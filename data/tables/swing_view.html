@@ -18,6 +18,12 @@
     --fresh: #86efac;
     --tested: #fde68a;
     --crossed: #fda4af;
+    --blocked: #fda4af;
+    --open: #86efac;
+    --watch: #93c5fd;
+    --low: #cbd5e1;
+    --medium: #fde68a;
+    --high: #fca5a5;
 }
 * {
     box-sizing: border-box;
@@ -190,6 +196,36 @@ body {
     color: var(--accent);
     border-color: rgba(125, 211, 252, 0.25);
 }
+.badge.open {
+    background: rgba(134, 239, 172, 0.16);
+    color: var(--open);
+    border-color: rgba(134, 239, 172, 0.25);
+}
+.badge.blocked {
+    background: rgba(253, 164, 175, 0.16);
+    color: var(--blocked);
+    border-color: rgba(253, 164, 175, 0.25);
+}
+.badge.watch {
+    background: rgba(147, 197, 253, 0.16);
+    color: var(--watch);
+    border-color: rgba(147, 197, 253, 0.25);
+}
+.badge.low {
+    background: rgba(203, 213, 225, 0.12);
+    color: var(--low);
+    border-color: rgba(203, 213, 225, 0.18);
+}
+.badge.medium {
+    background: rgba(253, 230, 138, 0.16);
+    color: var(--medium);
+    border-color: rgba(253, 230, 138, 0.25);
+}
+.badge.high {
+    background: rgba(252, 165, 165, 0.16);
+    color: var(--high);
+    border-color: rgba(252, 165, 165, 0.25);
+}
 .table-shell {
     border: 1px solid var(--border);
     border-radius: 22px;
@@ -236,6 +272,12 @@ body {
 .report-table tbody tr:hover td {
     background: rgba(125, 211, 252, 0.08);
 }
+.report-table tbody tr.row-blocked td {
+    background: rgba(127, 29, 29, 0.22);
+}
+.report-table tbody tr.row-watch td {
+    background: rgba(30, 64, 175, 0.14);
+}
 .report-table td.number-cell {
     text-align: right;
     font-variant-numeric: tabular-nums;
@@ -246,6 +288,11 @@ body {
 }
 .report-table td.status-cell {
     white-space: nowrap;
+}
+.report-table td.text-cell {
+    white-space: normal;
+    min-width: 240px;
+    line-height: 1.45;
 }
 .report-table th.sorted-asc::after {
     content: " ^";
@@ -285,44 +332,44 @@ body {
             <div>
                 <div class="eyebrow">FX level engine dashboard</div>
                 <h1 class="title">Swing view</h1>
-                <p class="subtitle">Offline dashboard snapshot generated from local parquet data.</p>
+                <p class="subtitle">Pair-level trading guardrail view showing what is blocked now and what is coming next.</p>
             </div>
             <div class="hero-meta">
                 <div><strong>Mode:</strong> offline self-contained report</div>
-                <div><strong>Rows:</strong> 2</div>
-                <div><strong>Columns:</strong> 23</div>
+                <div><strong>Rows:</strong> 15</div>
+                <div><strong>Columns:</strong> 11</div>
             </div>
         </section>
 
         <section class="metrics">
             <div class="metric-card">
-            <div class="metric-label">Symbols</div>
-            <div class="metric-value">2</div>
-            <div class="metric-note">unique instruments</div>
+            <div class="metric-label">Pairs</div>
+            <div class="metric-value">15</div>
+            <div class="metric-note">monitored instruments</div>
         </div>
 <div class="metric-card">
-            <div class="metric-label">Rows</div>
-            <div class="metric-value">2</div>
-            <div class="metric-note">rows in this view</div>
+            <div class="metric-label">Blocked</div>
+            <div class="metric-value">0</div>
+            <div class="metric-note">blocked right now</div>
         </div>
 <div class="metric-card">
-            <div class="metric-label">Fresh</div>
-            <div class="metric-value">27</div>
-            <div class="metric-note">fresh opportunities</div>
+            <div class="metric-label">Watchlist</div>
+            <div class="metric-value">15</div>
+            <div class="metric-note">pairs with threshold events ahead</div>
         </div>
 <div class="metric-card">
-            <div class="metric-label">Tested</div>
-            <div class="metric-value">3</div>
-            <div class="metric-note">already tested</div>
+            <div class="metric-label">Pair-events</div>
+            <div class="metric-value">0</div>
+            <div class="metric-note">pair/event links in 48h</div>
         </div>
 <div class="metric-card">
-            <div class="metric-label">Crossed</div>
-            <div class="metric-value">9</div>
-            <div class="metric-note">crossed or invalidated</div>
+            <div class="metric-label">Next due</div>
+            <div class="metric-value">2026-03-29 23:50 UTC</div>
+            <div class="metric-note">nearest relevant calendar time</div>
         </div>
 <div class="metric-card">
             <div class="metric-label">Updated</div>
-            <div class="metric-value">2026-03-28 02:31 UTC</div>
+            <div class="metric-value">2026-03-28 15:35 UTC</div>
             <div class="metric-note">latest snapshot</div>
         </div>
         </section>
@@ -332,18 +379,34 @@ body {
                 <span class="search-icon">Search</span>
                 <input id="table-search" type="search" placeholder="Search instrument, level, price or status">
             </div>
-            <div class="pill" id="row-count">Showing 2 rows</div>
+            <div class="pill" id="row-count">Showing 15 rows</div>
             <div class="status-legend">
-                <span class="badge fresh">Fresh</span>
-                <span class="badge tested">Tested</span>
-                <span class="badge crossed">Crossed</span>
+                <span class="badge blocked">Blocked</span>
+                <span class="badge open">Open</span>
+                <span class="badge watch">Watch</span>
+                <span class="badge high">High</span>
+                <span class="badge medium">Medium</span>
+                <span class="badge low">Low</span>
             </div>
         </section>
 
         <section class="table-shell">
             <div class="table-scroll">
-                <table id="levels_table" class="report-table"><thead><tr><th data-col="asof_time" data-type="date">asof time</th><th data-col="symbol" data-type="text">symbol</th><th data-col="current_price" data-type="number">current price</th><th data-col="nearest_ib" data-type="text">nearest ib</th><th data-col="nearest_ib_price" data-type="number">nearest ib price</th><th data-col="nearest_ib_pips" data-type="number">nearest ib pips</th><th data-col="nearest_ib_status" data-type="status">nearest ib status</th><th data-col="nearest_poc" data-type="text">nearest poc</th><th data-col="nearest_poc_price" data-type="number">nearest poc price</th><th data-col="nearest_poc_pips" data-type="number">nearest poc pips</th><th data-col="nearest_poc_status" data-type="status">nearest poc status</th><th data-col="nearest_support" data-type="text">nearest support</th><th data-col="nearest_support_price" data-type="number">nearest support price</th><th data-col="nearest_support_pips" data-type="number">nearest support pips</th><th data-col="nearest_support_status" data-type="status">nearest support status</th><th data-col="nearest_resistance" data-type="text">nearest resistance</th><th data-col="nearest_resistance_price" data-type="number">nearest resistance price</th><th data-col="nearest_resistance_pips" data-type="number">nearest resistance pips</th><th data-col="nearest_resistance_status" data-type="status">nearest resistance status</th><th data-col="fresh_levels" data-type="number">fresh levels</th><th data-col="tested_levels" data-type="number">tested levels</th><th data-col="crossed_levels" data-type="number">crossed levels</th><th data-col="total_levels" data-type="number">total levels</th></tr></thead><tbody><tr><td data-sort="2026-03-28 02:31:53.772446+00:00">2026-03-28 02:31 UTC</td><td class="symbol-cell" data-sort="EUR/USD">EUR/USD</td><td class="number-cell" data-sort="1.15728">1.15728</td><td data-sort="W_IB_HIGH">W_IB_HIGH</td><td class="number-cell" data-sort="1.1639849999999998">1.16398</td><td class="number-cell" data-sort="67.05">67.05</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td data-sort="M_POC">M_POC</td><td class="number-cell" data-sort="1.1803499999999993">1.18035</td><td class="number-cell" data-sort="230.7">230.70</td><td class="status-cell" data-sort="tested"><span class="badge tested">tested</span></td><td data-sort="W_IB_LOW">W_IB_LOW</td><td class="number-cell" data-sort="1.14845">1.14845</td><td class="number-cell" data-sort="-88.3">-88.30</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td data-sort="W_IB_HIGH">W_IB_HIGH</td><td class="number-cell" data-sort="1.1639849999999998">1.16398</td><td class="number-cell" data-sort="67.05">67.05</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td class="number-cell" data-sort="7">7</td><td class="number-cell" data-sort="2">2</td><td class="number-cell" data-sort="4">4</td><td class="number-cell" data-sort="13">13</td></tr>
-<tr><td data-sort="2026-03-28 02:31:55.004657+00:00">2026-03-28 02:31 UTC</td><td class="symbol-cell" data-sort="USD/JPY">USD/JPY</td><td class="number-cell" data-sort="159.231">159.231</td><td data-sort="W_IB_HIGH">W_IB_HIGH</td><td class="number-cell" data-sort="159.65949999999998">159.659</td><td class="number-cell" data-sort="42.85">42.85</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td data-sort="W_POC">W_POC</td><td class="number-cell" data-sort="159.23650000000828">159.237</td><td class="number-cell" data-sort="0.55">0.55</td><td class="status-cell" data-sort="crossed"><span class="badge crossed">crossed</span></td><td data-sort="W_IB_LOW">W_IB_LOW</td><td class="number-cell" data-sort="158.019">158.019</td><td class="number-cell" data-sort="-121.2">-121.20</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td data-sort="W_IB_HIGH">W_IB_HIGH</td><td class="number-cell" data-sort="159.65949999999998">159.659</td><td class="number-cell" data-sort="42.85">42.85</td><td class="status-cell" data-sort="fresh"><span class="badge fresh">fresh</span></td><td class="number-cell" data-sort="20">20</td><td class="number-cell" data-sort="1">1</td><td class="number-cell" data-sort="5">5</td><td class="number-cell" data-sort="26">26</td></tr></tbody></table>
+                <table id="levels_table" class="report-table"><thead><tr><th data-col="asof_time" data-type="date">asof time</th><th data-col="symbol" data-type="text">symbol</th><th data-col="trade_status" data-type="status">trade status</th><th data-col="block_reason" data-type="text">block reason</th><th data-col="next_threshold_event_time" data-type="date">next threshold event time</th><th data-col="next_threshold_event_importance" data-type="status">next threshold event importance</th><th data-col="next_threshold_event_name" data-type="text">next threshold event name</th><th data-col="next_event_time" data-type="date">next event time</th><th data-col="next_event_importance" data-type="status">next event importance</th><th data-col="next_event_name" data-type="text">next event name</th><th data-col="upcoming_threshold_event_count_48h" data-type="number">upcoming threshold event count 48h</th></tr></thead><tbody><tr class="row-watch"><td data-sort="2026-03-28 15:35:16.406599+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="AUD/JPY">AUD/JPY</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="2">2</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:06.684421+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="AUD/USD">AUD/USD</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-30T14:30:00+00:00">2026-03-30 14:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="Dallas Fed Manufacturing Index">Dallas Fed Manufacturing Index</td><td data-sort="2026-03-30T13:20:00+00:00">2026-03-30 13:20 UTC</td><td data-sort="low"><span class="badge low">low</span></td><td class="text-cell" data-sort="NY Fed Bill Purchases 4 to 12 months">NY Fed Bill Purchases 4 to 12 months</td><td data-sort="2">2</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:17.771195+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="CAD/JPY">CAD/JPY</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="2">2</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:19.172760+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="CHF/JPY">CHF/JPY</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="2">2</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:14.026200+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="EUR/CHF">EUR/CHF</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="Economic Sentiment">Economic Sentiment</td><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="Economic Sentiment">Economic Sentiment</td><td data-sort="1">1</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:10.053494+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="EUR/GBP">EUR/GBP</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoE Consumer Credit">BoE Consumer Credit</td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoE Consumer Credit">BoE Consumer Credit</td><td data-sort="4">4</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:11.437640+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="EUR/JPY">EUR/JPY</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="3">3</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:01.906985+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="EUR/USD">EUR/USD</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="Economic Sentiment">Economic Sentiment</td><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="Economic Sentiment">Economic Sentiment</td><td data-sort="3">3</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:15.134180+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="GBP/CHF">GBP/CHF</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoE Consumer Credit">BoE Consumer Credit</td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoE Consumer Credit">BoE Consumer Credit</td><td data-sort="3">3</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:12.876631+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="GBP/JPY">GBP/JPY</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="5">5</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:03.038542+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="GBP/USD">GBP/USD</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoE Consumer Credit">BoE Consumer Credit</td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoE Consumer Credit">BoE Consumer Credit</td><td data-sort="5">5</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:08.927285+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="NZD/USD">NZD/USD</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-30T14:30:00+00:00">2026-03-30 14:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="Dallas Fed Manufacturing Index">Dallas Fed Manufacturing Index</td><td data-sort="2026-03-30T13:20:00+00:00">2026-03-30 13:20 UTC</td><td data-sort="low"><span class="badge low">low</span></td><td class="text-cell" data-sort="NY Fed Bill Purchases 4 to 12 months">NY Fed Bill Purchases 4 to 12 months</td><td data-sort="2">2</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:07.792106+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="USD/CAD">USD/CAD</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-30T14:30:00+00:00">2026-03-30 14:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="Dallas Fed Manufacturing Index">Dallas Fed Manufacturing Index</td><td data-sort="2026-03-30T13:20:00+00:00">2026-03-30 13:20 UTC</td><td data-sort="low"><span class="badge low">low</span></td><td class="text-cell" data-sort="NY Fed Bill Purchases 4 to 12 months">NY Fed Bill Purchases 4 to 12 months</td><td data-sort="2">2</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:05.583341+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="USD/CHF">USD/CHF</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-30T14:30:00+00:00">2026-03-30 14:30 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="Dallas Fed Manufacturing Index">Dallas Fed Manufacturing Index</td><td data-sort="2026-03-30T13:20:00+00:00">2026-03-30 13:20 UTC</td><td data-sort="low"><span class="badge low">low</span></td><td class="text-cell" data-sort="NY Fed Bill Purchases 4 to 12 months">NY Fed Bill Purchases 4 to 12 months</td><td data-sort="2">2</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-28 15:35:04.470946+00:00">2026-03-28 15:35 UTC</td><td class="symbol-cell" data-sort="USD/JPY">USD/JPY</td><td class="status-cell" data-sort="open"><span class="badge open">open</span></td><td class="text-cell" data-sort=""></td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td data-sort="medium"><span class="badge medium">medium</span></td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="4">4</td></tr></tbody></table>
             </div>
         </section>
 

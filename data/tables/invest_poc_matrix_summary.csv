@@ -1,0 +1,24 @@
+asof_time,table_type,instrument,current_price,above_levels,below_levels,selected_levels,confluence_hits
+2026-03-28 17:33:51.226416+00:00,invest_poc_matrix,AUD/JPY,110.189,,"Y_POC @ 97.831
+Y_VAH @ 101.04",2,0
+2026-03-28 17:33:42.485126+00:00,invest_poc_matrix,AUD/USD,0.68737,,"Y_POC @ 0.65235
+Y_VAH @ 0.65995",2,0
+2026-03-28 17:33:52.393850+00:00,invest_poc_matrix,CAD/JPY,115.39,,"Y_POC @ 106.87
+Y_VAH @ 109.921",2,0
+2026-03-28 17:33:53.663607+00:00,invest_poc_matrix,CHF/JPY,200.587,,"Y_POC @ 183.452
+Y_VAH @ 192.957",2,0
+2026-03-28 17:33:49.059891+00:00,invest_poc_matrix,EUR/CHF,0.91968,Y_VAH @ 0.93695,,1,0
+2026-03-28 17:33:45.529711+00:00,invest_poc_matrix,EUR/GBP,0.8679,,,0,0
+2026-03-28 17:33:46.787607+00:00,invest_poc_matrix,EUR/JPY,184.49,,"Y_POC @ 172.481
+Y_VAH @ 178.259",2,0
+2026-03-28 17:33:38.032343+00:00,invest_poc_matrix,EUR/USD,1.15113,,,0,0
+2026-03-28 17:33:50.057757+00:00,invest_poc_matrix,GBP/CHF,1.06018,Y_VAH @ 1.08075,,1,0
+2026-03-28 17:33:48.066642+00:00,invest_poc_matrix,GBP/JPY,212.642,,"Y_POC @ 199.666
+Y_VAH @ 204.865",2,0
+2026-03-28 17:33:39.028822+00:00,invest_poc_matrix,GBP/USD,1.32608,,,0,0
+2026-03-28 17:33:44.532100+00:00,invest_poc_matrix,NZD/USD,0.57442,,Y_VAL @ 0.57045,1,0
+2026-03-28 17:33:43.542362+00:00,invest_poc_matrix,USD/CAD,1.38936,"Y_POC @ 1.40335
+Y_VAH @ 1.41265",,2,0
+2026-03-28 17:33:41.419376+00:00,invest_poc_matrix,USD/CHF,0.79892,Y_VAH @ 0.80605,,1,0
+2026-03-28 17:33:40.331232+00:00,invest_poc_matrix,USD/JPY,160.293,,"Y_POC @ 147.399
+Y_VAL @ 146.172",2,0

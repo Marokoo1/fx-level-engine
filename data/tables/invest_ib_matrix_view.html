@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Invest IB matrix</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+    --bg: #07111d;
+    --bg-soft: #0d1726;
+    --surface: rgba(12, 18, 32, 0.88);
+    --surface-2: rgba(17, 24, 39, 0.96);
+    --border: rgba(148, 163, 184, 0.16);
+    --text: #e5eef8;
+    --muted: #98a8be;
+    --accent: #7dd3fc;
+    --accent-strong: #38bdf8;
+    --fresh: #86efac;
+    --tested: #fde68a;
+    --crossed: #fda4af;
+    --blocked: #fda4af;
+    --open: #86efac;
+    --watch: #93c5fd;
+    --low: #cbd5e1;
+    --medium: #fde68a;
+    --high: #fca5a5;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 32%),
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.09), transparent 28%),
+        linear-gradient(180deg, #050b14 0%, var(--bg) 45%, #09121d 100%);
+    font-family: "Aptos", "Segoe UI", "Trebuchet MS", sans-serif;
+}
+.shell {
+    max-width: 1560px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+.hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: flex-end;
+    margin-bottom: 18px;
+}
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.12);
+    color: #c8efff;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.title {
+    margin: 14px 0 10px;
+    font-size: clamp(30px, 3.8vw, 58px);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+}
+.subtitle {
+    margin: 0;
+    color: var(--muted);
+    max-width: 68ch;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.hero-meta {
+    text-align: right;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+.hero-meta strong {
+    color: var(--text);
+}
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 24px 0 18px;
+}
+.metric-card {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(11, 16, 28, 0.94));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 16px 16px 14px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+}
+.metric-label {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+}
+.metric-value {
+    margin-top: 8px;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+.metric-note {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 13px;
+}
+.toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 18px 0 14px;
+}
+.search-wrap {
+    flex: 1 1 360px;
+    position: relative;
+}
+.search-wrap input {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: rgba(6, 12, 20, 0.76);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 14px 16px 14px 44px;
+    font-size: 14px;
+    outline: none;
+}
+.search-wrap input:focus {
+    border-color: rgba(125, 211, 252, 0.6);
+    box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.12);
+}
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+}
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    font-size: 13px;
+}
+.status-legend {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 72px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.badge.fresh {
+    background: rgba(134, 239, 172, 0.16);
+    color: var(--fresh);
+    border-color: rgba(134, 239, 172, 0.25);
+}
+.badge.tested {
+    background: rgba(253, 230, 138, 0.16);
+    color: var(--tested);
+    border-color: rgba(253, 230, 138, 0.25);
+}
+.badge.crossed {
+    background: rgba(253, 164, 175, 0.16);
+    color: var(--crossed);
+    border-color: rgba(253, 164, 175, 0.25);
+}
+.badge.marker {
+    background: rgba(125, 211, 252, 0.16);
+    color: var(--accent);
+    border-color: rgba(125, 211, 252, 0.25);
+}
+.badge.open {
+    background: rgba(134, 239, 172, 0.16);
+    color: var(--open);
+    border-color: rgba(134, 239, 172, 0.25);
+}
+.badge.blocked {
+    background: rgba(253, 164, 175, 0.16);
+    color: var(--blocked);
+    border-color: rgba(253, 164, 175, 0.25);
+}
+.badge.watch {
+    background: rgba(147, 197, 253, 0.16);
+    color: var(--watch);
+    border-color: rgba(147, 197, 253, 0.25);
+}
+.badge.low {
+    background: rgba(203, 213, 225, 0.12);
+    color: var(--low);
+    border-color: rgba(203, 213, 225, 0.18);
+}
+.badge.medium {
+    background: rgba(253, 230, 138, 0.16);
+    color: var(--medium);
+    border-color: rgba(253, 230, 138, 0.25);
+}
+.badge.high {
+    background: rgba(252, 165, 165, 0.16);
+    color: var(--high);
+    border-color: rgba(252, 165, 165, 0.25);
+}
+.table-shell {
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(8, 14, 25, 0.88), rgba(5, 10, 18, 0.92));
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+.table-scroll {
+    overflow: auto;
+    max-height: min(72vh, 960px);
+}
+.report-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 100%;
+}
+.report-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(10, 16, 28, 0.98));
+    color: var(--accent);
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 15px 14px;
+    border-bottom: 1px solid rgba(125, 211, 252, 0.14);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+.report-table tbody td {
+    padding: 14px 14px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    color: var(--text);
+    vertical-align: top;
+    white-space: nowrap;
+}
+.report-table tbody tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.015);
+}
+.report-table tbody tr:hover td {
+    background: rgba(125, 211, 252, 0.08);
+}
+.report-table tbody tr.row-blocked td {
+    background: rgba(127, 29, 29, 0.22);
+}
+.report-table tbody tr.row-watch td {
+    background: rgba(30, 64, 175, 0.14);
+}
+.report-table td.number-cell {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.report-table td.symbol-cell {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+.report-table td.status-cell {
+    white-space: nowrap;
+}
+.report-table td.text-cell {
+    white-space: normal;
+    min-width: 180px;
+    line-height: 1.45;
+}
+.report-table td.level-list-cell {
+    min-width: 220px;
+    max-width: 280px;
+}
+.report-table th.sorted-asc::after {
+    content: " ^";
+    color: var(--accent-strong);
+}
+.report-table th.sorted-desc::after {
+    content: " v";
+    color: var(--accent-strong);
+}
+.empty-state {
+    padding: 28px;
+    color: var(--muted);
+}
+.footer-note {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+@media (max-width: 900px) {
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .hero-meta {
+        text-align: left;
+    }
+    .table-scroll {
+        max-height: none;
+    }
+}
+</style>
+</head>
+<body>
+    <div class="shell">
+        <section class="hero">
+            <div>
+                <div class="eyebrow">FX level engine dashboard</div>
+                <h1 class="title">Invest IB matrix</h1>
+                <p class="subtitle">Offline matrix snapshot showing fresh, untested support and resistance levels.</p>
+            </div>
+            <div class="hero-meta">
+                <div><strong>Mode:</strong> offline self-contained report</div>
+                <div><strong>Rows:</strong> 15</div>
+                <div><strong>Columns:</strong> 6</div>
+            </div>
+        </section>
+
+        <section class="metrics">
+            <div class="metric-card">
+            <div class="metric-label">Instruments</div>
+            <div class="metric-value">15</div>
+            <div class="metric-note">unique instruments</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Rows</div>
+            <div class="metric-value">15</div>
+            <div class="metric-note">rows in this view</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Selected</div>
+            <div class="metric-value">52</div>
+            <div class="metric-note">filled support/resistance slots</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Confluence</div>
+            <div class="metric-value">0</div>
+            <div class="metric-note">badge hits</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Updated</div>
+            <div class="metric-value">2026-03-28 17:31 UTC</div>
+            <div class="metric-note">latest snapshot</div>
+        </div>
+        </section>
+
+        <section class="toolbar">
+            <div class="search-wrap">
+                <span class="search-icon">Search</span>
+                <input id="table-search" type="search" placeholder="Search instrument, level, price or status">
+            </div>
+            <div class="pill" id="row-count">Showing 15 rows</div>
+            <div class="status-legend">
+                <span class="badge fresh">Fresh</span>
+                <span class="badge tested">Tested</span>
+                <span class="badge crossed">Crossed</span>
+            </div>
+        </section>
+
+        <section class="table-shell">
+            <div class="table-scroll">
+                <table id="levels_table" class="report-table"><thead><tr><th data-col="instrument" data-type="text">instrument</th><th data-col="current_price" data-type="number">current price</th><th data-col="above_levels" data-type="text">above levels</th><th data-col="below_levels" data-type="text">below levels</th><th data-col="selected_levels" data-type="number">selected levels</th><th data-col="confluence_hits" data-type="number">confluence hits</th></tr></thead><tbody><tr><td class="symbol-cell" data-sort="AUD/JPY">AUD/JPY</td><td class="number-cell" data-sort="110.189">110.189</td><td class="text-cell level-list-cell" data-sort="Y IB 150 @ 121.847
+Y IB 200 @ 125.303">Y IB 150 @ 121.847<br>Y IB 200 @ 125.303</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 104.566
+Y IB -150 @ 94.197">Y IB LOW @ 104.566<br>Y IB -150 @ 94.197</td><td data-sort="4">4</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="AUD/USD">AUD/USD</td><td class="number-cell" data-sort="0.68737">0.68737</td><td class="text-cell level-list-cell" data-sort="Y IB 150 @ 0.78735">Y IB 150 @ 0.78735</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 0.66629
+Y IB -150 @ 0.59365">Y IB LOW @ 0.66629<br>Y IB -150 @ 0.59365</td><td data-sort="3">3</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="CAD/JPY">CAD/JPY</td><td class="number-cell" data-sort="115.39">115.390</td><td class="text-cell level-list-cell" data-sort="Y IB 150 @ 120.992
+Y IB 200 @ 122.844">Y IB 150 @ 120.992<br>Y IB 200 @ 122.844</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 111.731
+Y IB -150 @ 106.174">Y IB LOW @ 111.731<br>Y IB -150 @ 106.174</td><td data-sort="4">4</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="CHF/JPY">CHF/JPY</td><td class="number-cell" data-sort="200.587">200.587</td><td class="text-cell level-list-cell" data-sort="Y IB 150 @ 215.039
+Y IB 200 @ 218.829">Y IB 150 @ 215.039<br>Y IB 200 @ 218.829</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 196.089
+Y IB -150 @ 184.719">Y IB LOW @ 196.089<br>Y IB -150 @ 184.719</td><td data-sort="4">4</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="EUR/CHF">EUR/CHF</td><td class="number-cell" data-sort="0.91968">0.91968</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 0.935
+Y IB 150 @ 0.9848">Y IB HIGH @ 0.935<br>Y IB 150 @ 0.9848</td><td class="text-cell level-list-cell" data-sort="Y IB -150 @ 0.85198
+Y IB -200 @ 0.83538">Y IB -150 @ 0.85198<br>Y IB -200 @ 0.83538</td><td data-sort="4">4</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="EUR/GBP">EUR/GBP</td><td class="number-cell" data-sort="0.8679">0.86790</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 0.87893
+Y IB 150 @ 0.90549">Y IB HIGH @ 0.87893<br>Y IB 150 @ 0.90549</td><td class="text-cell level-list-cell" data-sort="Y IB -150 @ 0.83465
+Y IB -200 @ 0.8258">Y IB -150 @ 0.83465<br>Y IB -200 @ 0.8258</td><td data-sort="4">4</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="EUR/JPY">EUR/JPY</td><td class="number-cell" data-sort="184.49">184.490</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 186.875
+Y IB 150 @ 195.979">Y IB HIGH @ 186.875<br>Y IB 150 @ 195.979</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 180.805
+Y IB -150 @ 171.701">Y IB LOW @ 180.805<br>Y IB -150 @ 171.701</td><td data-sort="4">4</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="EUR/USD">EUR/USD</td><td class="number-cell" data-sort="1.15113">1.15113</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 1.20832">Y IB HIGH @ 1.20832</td><td class="text-cell level-list-cell" data-sort="Y IB -150 @ 1.08023
+Y IB -200 @ 1.05461">Y IB -150 @ 1.08023<br>Y IB -200 @ 1.05461</td><td data-sort="3">3</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="GBP/CHF">GBP/CHF</td><td class="number-cell" data-sort="1.06018">1.06018</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 1.07984
+Y IB 150 @ 1.15592">Y IB HIGH @ 1.07984<br>Y IB 150 @ 1.15592</td><td class="text-cell level-list-cell" data-sort=""></td><td data-sort="2">2</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="GBP/JPY">GBP/JPY</td><td class="number-cell" data-sort="212.642">212.642</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 215.014
+Y IB 150 @ 226.684">Y IB HIGH @ 215.014<br>Y IB 150 @ 226.684</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 207.233
+Y IB -150 @ 195.562">Y IB LOW @ 207.233<br>Y IB -150 @ 195.562</td><td data-sort="4">4</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="GBP/USD">GBP/USD</td><td class="number-cell" data-sort="1.32608">1.32608</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 1.38695">Y IB HIGH @ 1.38695</td><td class="text-cell level-list-cell" data-sort="Y IB -150 @ 1.25119">Y IB -150 @ 1.25119</td><td data-sort="2">2</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="NZD/USD">NZD/USD</td><td class="number-cell" data-sort="0.57442">0.57442</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 0.60927
+Y IB 150 @ 0.6665">Y IB HIGH @ 0.60927<br>Y IB 150 @ 0.6665</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 0.57112
+Y IB -150 @ 0.51388">Y IB LOW @ 0.57112<br>Y IB -150 @ 0.51388</td><td data-sort="4">4</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="USD/CAD">USD/CAD</td><td class="number-cell" data-sort="1.38936">1.38936</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 1.39288
+Y IB 150 @ 1.45994">Y IB HIGH @ 1.39288<br>Y IB 150 @ 1.45994</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 1.34817">Y IB LOW @ 1.34817</td><td data-sort="3">3</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="USD/CHF">USD/CHF</td><td class="number-cell" data-sort="0.79892">0.79892</td><td class="text-cell level-list-cell" data-sort="Y IB HIGH @ 0.80417
+Y IB 150 @ 0.86985">Y IB HIGH @ 0.80417<br>Y IB 150 @ 0.86985</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 0.76039">Y IB LOW @ 0.76039</td><td data-sort="3">3</td><td data-sort="0">0</td></tr>
+<tr><td class="symbol-cell" data-sort="USD/JPY">USD/JPY</td><td class="number-cell" data-sort="160.293">160.293</td><td class="text-cell level-list-cell" data-sort="Y IB 150 @ 170.497
+Y IB 200 @ 174.178">Y IB 150 @ 170.497<br>Y IB 200 @ 174.178</td><td class="text-cell level-list-cell" data-sort="Y IB LOW @ 152.094
+Y IB -150 @ 141.053">Y IB LOW @ 152.094<br>Y IB -150 @ 141.053</td><td data-sort="4">4</td><td data-sort="0">0</td></tr></tbody></table>
+            </div>
+        </section>
+
+        <div class="footer-note">
+            Tip: click any column header to sort. The HTML is fully self-contained, so it works offline and does not rely on CDN assets.
+        </div>
+    </div>
+
+<script>
+(function() {
+    const table = document.getElementById('levels_table');
+    const search = document.getElementById('table-search');
+    const rowCount = document.getElementById('row-count');
+    if (!table) {
+        return;
+    }
+
+    const tbody = table.tBodies[0];
+    const headers = Array.from(table.tHead.rows[0].cells);
+    let sortState = { index: -1, direction: 1 };
+    let allRows = Array.from(tbody.rows);
+
+    function normalize(value, type) {
+        const raw = (value ?? '').toString().trim();
+        if (!raw) {
+            return '';
+        }
+        if (type === 'number') {
+            const parsed = parseFloat(raw.replace(/[^0-9+\-\.]/g, ''));
+            return Number.isNaN(parsed) ? Number.NEGATIVE_INFINITY : parsed;
+        }
+        if (type === 'date') {
+            const parsed = Date.parse(raw);
+            return Number.isNaN(parsed) ? raw.toLowerCase() : parsed;
+        }
+        if (type === 'status') {
+            return raw.toLowerCase();
+        }
+        return raw.toLowerCase();
+    }
+
+    function renderRows(rows) {
+        tbody.replaceChildren(...rows);
+        allRows = rows;
+    }
+
+    function updateRowCount() {
+        const visible = allRows.filter(row => row.style.display !== 'none').length;
+        rowCount.textContent = 'Showing ' + visible + ' / ' + allRows.length + ' rows';
+    }
+
+    function sortBy(index) {
+        const header = headers[index];
+        const type = header.dataset.type || 'text';
+        const direction = sortState.index === index ? -sortState.direction : 1;
+        sortState = { index, direction };
+
+        headers.forEach(th => {
+            th.classList.remove('sorted-asc', 'sorted-desc');
+        });
+        header.classList.add(direction === 1 ? 'sorted-asc' : 'sorted-desc');
+
+        const rows = Array.from(allRows);
+        rows.sort((a, b) => {
+            const left = normalize(a.cells[index].dataset.sort || a.cells[index].textContent, type);
+            const right = normalize(b.cells[index].dataset.sort || b.cells[index].textContent, type);
+            if (left < right) return -1 * direction;
+            if (left > right) return 1 * direction;
+            return 0;
+        });
+
+        renderRows(rows);
+        applyFilter();
+    }
+
+    function applyFilter() {
+        const query = search.value.trim().toLowerCase();
+        allRows.forEach(row => {
+            const match = !query || row.textContent.toLowerCase().includes(query);
+            row.style.display = match ? '' : 'none';
+        });
+        updateRowCount();
+    }
+
+    headers.forEach((th, index) => {
+        th.addEventListener('click', () => sortBy(index));
+    });
+
+    search.addEventListener('input', applyFilter);
+    applyFilter();
+})();
+</script>
+</body>
+</html>

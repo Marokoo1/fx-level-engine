@@ -1,3 +1,16 @@
 asof_time,table_type,source_table_type,instrument,current_price,last_price,res1_name,res1_price,res1_pips,res1_family,res1_period,res1_status,res1_conf,res1_conf_name,res1_conf_pips,res2_name,res2_price,res2_pips,res2_family,res2_period,res2_status,res2_conf,res2_conf_name,res2_conf_pips,sup1_name,sup1_price,sup1_pips,sup1_family,sup1_period,sup1_status,sup1_conf,sup1_conf_name,sup1_conf_pips,sup2_name,sup2_price,sup2_pips,sup2_family,sup2_period,sup2_status,sup2_conf,sup2_conf_name,sup2_conf_pips,source_levels,source_resistances,source_supports,selected_resistances,selected_supports,selected_levels,confluence_candidates,confluence_hits,signal_summary
-2026-03-28 02:31:53.681317+00:00,poc_matrix,intraday,EUR/USD,1.15728,1.15728,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,23,0,
-2026-03-28 02:31:54.891068+00:00,poc_matrix,intraday,USD/JPY,159.231,159.231,,,,,,,,,,,,,,,,,,,Y_POC,147.756,-1147.55,POC,Y,fresh,,,,,,,,,,,,,1,0,1,0,1,1,26,0,Sup1 Y_POC (fresh) @ 147.756 [-1147.55 pips]
+2026-03-28 17:33:51.107656+00:00,poc_matrix,intraday,AUD/JPY,110.189,110.189,W_POC,112.255,206.6,POC,W,fresh,,,,W_VAH,113.015,282.6,POC,W,fresh,,,,,,,,,,,,,,,,,,,,,,3,3,0,3,0,3,0,0,Res1 W_POC (fresh) @ 112.255 [206.60 pips] | Res2 W_VAH (fresh) @ 113.015 [282.60 pips] | Res3 W_VAL (fresh) @ 111.908 [171.90 pips]
+2026-03-28 17:33:42.353612+00:00,poc_matrix,intraday,AUD/USD,0.68737,0.68737,W_VAH,0.70915,217.85,POC,W,fresh,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,1,1,0,1,0,1,0,0,Res1 W_VAH (fresh) @ 0.70915 [217.85 pips]
+2026-03-28 17:33:52.271194+00:00,poc_matrix,intraday,CAD/JPY,115.39,115.39,W_VAH,116.493,110.25,POC,W,fresh,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,1,1,0,1,0,1,0,0,Res1 W_VAH (fresh) @ 116.493 [110.25 pips]
+2026-03-28 17:33:53.542690+00:00,poc_matrix,intraday,CHF/JPY,200.587,200.587,W_VAH,202.57,198.25,POC,W,fresh,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,1,1,0,1,0,1,0,0,Res1 W_VAH (fresh) @ 202.57 [198.25 pips]
+2026-03-28 17:33:48.934127+00:00,poc_matrix,intraday,EUR/CHF,0.91968,0.91968,,,,,,,,,,,,,,,,,,,W_VAL,0.90635,-133.25,POC,W,fresh,,,,,,,,,,,,,1,0,1,0,1,1,0,0,Sup1 W_VAL (fresh) @ 0.90635 [-133.25 pips]
+2026-03-28 17:33:45.406152+00:00,poc_matrix,intraday,EUR/GBP,0.8679,0.8679,,,,,,,,,,,,,,,,,,,W_VAL,0.86275,-51.5,POC,W,fresh,,,,,,,,,,,,,1,0,1,0,1,1,0,0,Sup1 W_VAL (fresh) @ 0.86275 [-51.50 pips]
+2026-03-28 17:33:46.668274+00:00,poc_matrix,intraday,EUR/JPY,184.49,184.49,,,,,,,,,,,,,,,,,,,W_VAL,182.597,-189.35,POC,W,fresh,,,,,,,,,,,,,1,0,1,0,1,1,0,0,Sup1 W_VAL (fresh) @ 182.597 [-189.35 pips]
+2026-03-28 17:33:37.886122+00:00,poc_matrix,intraday,EUR/USD,1.15113,1.15113,,,,,,,,,,,,,,,,,,,W_VAL,1.14655,-45.8,POC,W,fresh,,,,,,,,,,,,,1,0,1,0,1,1,0,0,Sup1 W_VAL (fresh) @ 1.14655 [-45.80 pips]
+2026-03-28 17:33:49.933900+00:00,poc_matrix,intraday,GBP/CHF,1.06018,1.06018,,,,,,,,,,,,,,,,,,,W_POC,1.04865,-115.25,POC,W,fresh,,,,W_VAL,1.04595,-142.25,POC,W,fresh,,,,2,0,2,0,2,2,0,0,Sup1 W_POC (fresh) @ 1.04865 [-115.25 pips] | Sup2 W_VAL (fresh) @ 1.04595 [-142.25 pips]
+2026-03-28 17:33:47.946623+00:00,poc_matrix,intraday,GBP/JPY,212.642,212.642,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:33:38.908183+00:00,poc_matrix,intraday,GBP/USD,1.32608,1.32608,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:33:44.409724+00:00,poc_matrix,intraday,NZD/USD,0.57442,0.57442,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:33:43.419083+00:00,poc_matrix,intraday,USD/CAD,1.38936,1.38936,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:33:41.288980+00:00,poc_matrix,intraday,USD/CHF,0.79892,0.79892,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:33:40.182824+00:00,poc_matrix,intraday,USD/JPY,160.293,160.293,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,

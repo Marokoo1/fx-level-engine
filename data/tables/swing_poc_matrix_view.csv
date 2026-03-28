@@ -1,0 +1,20 @@
+asof_time,table_type,instrument,current_price,above_levels,below_levels,selected_levels,confluence_hits
+2026-03-28 17:33:51.158570+00:00,swing_poc_matrix,AUD/JPY,110.189,,"M_POC @ 109.201
+M_VAL @ 108.068",2,0
+2026-03-28 17:33:42.415097+00:00,swing_poc_matrix,AUD/USD,0.68737,,,0,0
+2026-03-28 17:33:52.326187+00:00,swing_poc_matrix,CAD/JPY,115.39,,M_VAL @ 112.985,1,0
+2026-03-28 17:33:53.599045+00:00,swing_poc_matrix,CHF/JPY,200.587,,M_VAL @ 198.306,1,0
+2026-03-28 17:33:48.989609+00:00,swing_poc_matrix,EUR/CHF,0.91968,,,0,0
+2026-03-28 17:33:45.465265+00:00,swing_poc_matrix,EUR/GBP,0.8679,,,0,0
+2026-03-28 17:33:46.722809+00:00,swing_poc_matrix,EUR/JPY,184.49,M_VAH @ 185.944,,1,0
+2026-03-28 17:33:37.965422+00:00,swing_poc_matrix,EUR/USD,1.15113,M_VAH @ 1.18555,,1,0
+2026-03-28 17:33:49.988407+00:00,swing_poc_matrix,GBP/CHF,1.06018,,,0,0
+2026-03-28 17:33:47.998316+00:00,swing_poc_matrix,GBP/JPY,212.642,,"M_POC @ 208.635
+M_VAL @ 207.273",2,0
+2026-03-28 17:33:38.963024+00:00,swing_poc_matrix,GBP/USD,1.32608,"M_POC @ 1.36465
+M_VAH @ 1.37115",,2,0
+2026-03-28 17:33:44.465058+00:00,swing_poc_matrix,NZD/USD,0.57442,"M_POC @ 0.60435
+M_VAH @ 0.60515",,2,0
+2026-03-28 17:33:43.479255+00:00,swing_poc_matrix,USD/CAD,1.38936,,,0,0
+2026-03-28 17:33:41.350790+00:00,swing_poc_matrix,USD/CHF,0.79892,,,0,0
+2026-03-28 17:33:40.256368+00:00,swing_poc_matrix,USD/JPY,160.293,,M_VAL @ 154.112,1,0

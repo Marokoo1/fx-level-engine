@@ -1,3 +1,16 @@
 asof_time,table_type,source_table_type,instrument,current_price,last_price,res1_name,res1_price,res1_pips,res1_family,res1_period,res1_status,res1_conf,res1_conf_name,res1_conf_pips,res2_name,res2_price,res2_pips,res2_family,res2_period,res2_status,res2_conf,res2_conf_name,res2_conf_pips,sup1_name,sup1_price,sup1_pips,sup1_family,sup1_period,sup1_status,sup1_conf,sup1_conf_name,sup1_conf_pips,sup2_name,sup2_price,sup2_pips,sup2_family,sup2_period,sup2_status,sup2_conf,sup2_conf_name,sup2_conf_pips,source_levels,source_resistances,source_supports,selected_resistances,selected_supports,selected_levels,confluence_candidates,confluence_hits,signal_summary
-2026-03-28 02:31:53.681317+00:00,ib_matrix,intraday,EUR/USD,1.15728,1.15728,W_IB_HIGH,1.16398,67.05,IB,W,fresh,,,,M_IB_MID,1.16743,101.5,IB,M,fresh,,,,W_IB_LOW,1.14845,-88.3,IB,W,fresh,,,,W_IB_1_DOWN,1.13292,-243.65,IB,W,fresh,,,,23,12,11,2,2,4,0,0,Res1 W_IB_HIGH (fresh) @ 1.16398 [67.05 pips] | Res2 M_IB_MID (fresh) @ 1.16743 [101.50 pips] | Sup1 W_IB_LOW (fresh) @ 1.14845 [-88.30 pips] | Sup2 W_IB_1_DOWN (fresh) @ 1.13292 [-243.65 pips]
-2026-03-28 02:31:54.891068+00:00,ib_matrix,intraday,USD/JPY,159.231,159.231,W_IB_HIGH,159.659,42.85,IB,W,fresh,,,,M_IB_1_UP,160.402,117.05,IB,M,fresh,,,,W_IB_LOW,158.019,-121.2,IB,W,fresh,,,,M_IB_MID,156.755,-247.6,IB,M,fresh,,,,26,12,14,2,2,4,1,0,Res1 W_IB_HIGH (fresh) @ 159.659 [42.85 pips] | Res2 M_IB_1_UP (fresh) @ 160.402 [117.05 pips] | Sup1 W_IB_LOW (fresh) @ 158.019 [-121.20 pips] | Sup2 M_IB_MID (fresh) @ 156.755 [-247.60 pips]
+2026-03-28 17:30:56.851769+00:00,ib_matrix,intraday,AUD/JPY,110.189,110.189,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,3,0,
+2026-03-28 17:30:42.330677+00:00,ib_matrix,intraday,AUD/USD,0.68737,0.68737,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,1,0,
+2026-03-28 17:31:00.008947+00:00,ib_matrix,intraday,CAD/JPY,115.39,115.39,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,1,0,
+2026-03-28 17:31:02.549031+00:00,ib_matrix,intraday,CHF/JPY,200.587,200.587,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,1,0,
+2026-03-28 17:30:52.772202+00:00,ib_matrix,intraday,EUR/CHF,0.91968,0.91968,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,1,0,
+2026-03-28 17:30:46.892404+00:00,ib_matrix,intraday,EUR/GBP,0.8679,0.8679,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,1,0,
+2026-03-28 17:30:49.182300+00:00,ib_matrix,intraday,EUR/JPY,184.49,184.49,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,1,0,
+2026-03-28 17:30:35.509997+00:00,ib_matrix,intraday,EUR/USD,1.15113,1.15113,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,1,0,
+2026-03-28 17:30:54.370202+00:00,ib_matrix,intraday,GBP/CHF,1.06018,1.06018,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,2,0,
+2026-03-28 17:30:51.218494+00:00,ib_matrix,intraday,GBP/JPY,212.642,212.642,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:30:37.127038+00:00,ib_matrix,intraday,GBP/USD,1.32608,1.32608,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:30:45.549499+00:00,ib_matrix,intraday,NZD/USD,0.57442,0.57442,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:30:44.000557+00:00,ib_matrix,intraday,USD/CAD,1.38936,1.38936,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:30:40.606129+00:00,ib_matrix,intraday,USD/CHF,0.79892,0.79892,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,
+2026-03-28 17:30:39.037193+00:00,ib_matrix,intraday,USD/JPY,160.293,160.293,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,

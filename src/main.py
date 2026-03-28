@@ -40,13 +40,13 @@ def main() -> None:
 
     if args.mode == "export-due":
         df = build_all_levels(settings, symbols)
-        result = export_due_tables(df, settings)
+        result = export_due_tables(df, settings, symbols=symbols)
         pprint(result)
         return
 
     if args.mode == "export-all":
         df = build_all_levels(settings, symbols)
-        result = export_tables(df, settings)
+        result = export_tables(df, settings, symbols=symbols)
         pprint(result)
         return
 

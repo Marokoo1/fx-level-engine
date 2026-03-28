@@ -103,6 +103,38 @@ def build_poc_rows(symbol: str, poc: ProfileResult, last_price: float, post_df: 
         source_data="fxcm_m30",
         notes=f"Profile {poc.profile_id} | close {poc.profile_close:.5f}",
     ))
+    rows.append(_make_record(
+        table_type=table_type,
+        symbol=symbol,
+        level_family="POC",
+        level_period=poc.period_code,
+        level_name=f"{poc.period_code}_VAH",
+        level_price=poc.vah,
+        zone_low=poc.val,
+        zone_high=poc.vah,
+        last_price=last_price,
+        post_df=post_df,
+        build_timeframe=build_timeframe,
+        entry_timeframe=entry_timeframe,
+        source_data="fxcm_m30",
+        notes=f"Profile {poc.profile_id} | value area high",
+    ))
+    rows.append(_make_record(
+        table_type=table_type,
+        symbol=symbol,
+        level_family="POC",
+        level_period=poc.period_code,
+        level_name=f"{poc.period_code}_VAL",
+        level_price=poc.val,
+        zone_low=poc.val,
+        zone_high=poc.vah,
+        last_price=last_price,
+        post_df=post_df,
+        build_timeframe=build_timeframe,
+        entry_timeframe=entry_timeframe,
+        source_data="fxcm_m30",
+        notes=f"Profile {poc.profile_id} | value area low",
+    ))
     return rows
 
 

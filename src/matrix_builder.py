@@ -54,6 +54,17 @@ def _slot_prefix(side: str, index: int) -> str:
     return f"res{index}" if side == "short" else f"sup{index}"
 
 
+def _selection_priority(level_name: str | None) -> int:
+    text = "" if level_name is None else str(level_name).upper()
+    if "POC" in text and "VAH" not in text and "VAL" not in text:
+        return 0
+    if "VAH" in text:
+        return 1
+    if "VAL" in text:
+        return 2
+    return 0
+
+
 def _empty_slot(prefix: str) -> dict:
     return {
         f"{prefix}_name": None,
@@ -80,6 +91,17 @@ def _slot_summary(prefix: str, row, symbol: str, conf: dict | None) -> str:
     distance_part = f" [{distance:.2f} pips]" if distance is not None and not pd.isna(distance) else ""
     conf_part = f" +{conf['conf']}" if conf and conf.get("conf") else ""
     return f"{label} {row['level_name']}{status_part} @ {price}{distance_part}{conf_part}"
+
+
+def _slot_display(name, price, conf, symbol: str) -> str:
+    if name is None or pd.isna(name):
+        return ""
+
+    price_text = _round_price(price, _price_decimals(symbol))
+    text = f"{name} @ {price_text}"
+    if conf and not pd.isna(conf):
+        text += f" [{conf}]"
+    return text
 
 
 def _matches_confluence(row, other_group: pd.DataFrame, symbol: str, tolerance_pips: float | None) -> dict | None:
@@ -111,7 +133,8 @@ def _pick_side_levels(
     if side_group.empty:
         return []
 
-    side_group = side_group.sort_values(["distance_pips_abs", "rank"]).reset_index(drop=True)
+    side_group["selection_priority"] = side_group["level_name"].map(_selection_priority)
+    side_group = side_group.sort_values(["selection_priority", "distance_pips_abs", "rank"]).reset_index(drop=True)
     selected: list[pd.Series] = []
     min_separation = float(min_separation_pips or 0.0)
 
@@ -359,30 +382,64 @@ def build_matrix_view_table(df: pd.DataFrame, table_name: str) -> pd.DataFrame:
     if df.empty:
         return df.copy()
 
+    rows: list[dict] = []
+
+    for _, row in df.sort_values("instrument").iterrows():
+        symbol = str(row.get("instrument", ""))
+        above_levels = []
+        below_levels = []
+
+        slot_index = 1
+        while f"res{slot_index}_name" in df.columns:
+            above_levels.append(
+                _slot_display(
+                    row.get(f"res{slot_index}_name"),
+                    row.get(f"res{slot_index}_price"),
+                    row.get(f"res{slot_index}_conf"),
+                    symbol,
+                )
+            )
+            slot_index += 1
+
+        above_levels = [item for item in above_levels if item]
+
+        slot_index = 1
+        while f"sup{slot_index}_name" in df.columns:
+            below_levels.append(
+                _slot_display(
+                    row.get(f"sup{slot_index}_name"),
+                    row.get(f"sup{slot_index}_price"),
+                    row.get(f"sup{slot_index}_conf"),
+                    symbol,
+                )
+            )
+            slot_index += 1
+
+        below_levels = [item for item in below_levels if item]
+
+        rows.append(
+            {
+                "asof_time": row.get("asof_time"),
+                "table_type": row.get("table_type", table_name),
+                "instrument": symbol,
+                "current_price": _round_price(row.get("current_price"), _price_decimals(symbol)),
+                "above_levels": "\n".join(above_levels),
+                "below_levels": "\n".join(below_levels),
+                "selected_levels": len(above_levels) + len(below_levels),
+                "confluence_hits": row.get("confluence_hits"),
+            }
+        )
+
+    out = pd.DataFrame(rows)
     preferred_cols = [
         "asof_time",
         "table_type",
         "instrument",
         "current_price",
-        "res1_price",
-        "res1_pips",
-        "res1_conf",
-        "res2_price",
-        "res2_pips",
-        "res2_conf",
-        "sup1_price",
-        "sup1_pips",
-        "sup1_conf",
-        "sup2_price",
-        "sup2_pips",
-        "sup2_conf",
+        "above_levels",
+        "below_levels",
         "selected_levels",
         "confluence_hits",
-        "signal_summary",
     ]
-
-    existing_cols = [col for col in preferred_cols if col in df.columns]
-    if not existing_cols:
-        return df.copy()
-
-    return df[existing_cols].sort_values("instrument").reset_index(drop=True)
+    existing_cols = [col for col in preferred_cols if col in out.columns]
+    return out[existing_cols].sort_values("instrument").reset_index(drop=True)

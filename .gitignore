@@ -1,4 +1,7 @@
 .venv/
+.venv37/
+.python37-embed/
+.python311-embed/
 __pycache__/
 *.pyc
 .env

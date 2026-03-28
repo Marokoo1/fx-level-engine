@@ -36,35 +36,87 @@ def _row_symbol(row: pd.Series | dict) -> str | None:
 
 
 def _is_matrix_view(df: pd.DataFrame) -> bool:
-    return any(col in df.columns for col in ["res1_price", "sup1_price", "selected_levels", "confluence_hits"])
+    return any(
+        col in df.columns
+        for col in ["res1_price", "sup1_price", "selected_levels", "confluence_hits", "above_levels", "below_levels"]
+    )
+
+
+def _is_calendar_status_view(df: pd.DataFrame) -> bool:
+    return "trade_status" in df.columns and "next_event_name" in df.columns
+
+
+def _is_calendar_events_view(df: pd.DataFrame) -> bool:
+    return "event_status" in df.columns and "event_time" in df.columns
 
 
 def _select_display_columns(df: pd.DataFrame) -> list[str]:
     if df.empty:
         return list(df.columns)
 
+    if _is_calendar_status_view(df):
+        focused = [
+            "asof_time",
+            "symbol",
+            "trade_status",
+            "block_reason",
+            "active_event_time",
+            "active_event_importance",
+            "active_event_country",
+            "active_event_name",
+            "next_threshold_event_time",
+            "next_threshold_event_importance",
+            "next_threshold_event_country",
+            "next_threshold_event_name",
+            "next_event_time",
+            "next_event_importance",
+            "next_event_country",
+            "next_event_name",
+            "upcoming_threshold_event_count_48h",
+            "upcoming_event_count_48h",
+            "upcoming_events_48h",
+        ]
+        return [col for col in focused if col in df.columns]
+
+    if _is_calendar_events_view(df):
+        focused = [
+            "event_time",
+            "event_status",
+            "event_importance",
+            "country",
+            "event_name",
+            "affected_symbol_count",
+            "affected_symbols",
+            "quiet_window_start",
+            "quiet_window_end",
+            "forecast",
+            "previous",
+            "actual",
+            "source",
+        ]
+        return [col for col in focused if col in df.columns]
+
     if _is_matrix_view(df):
         focused = [
             "instrument",
             "current_price",
-            "res1_price",
-            "res1_pips",
-            "res1_conf",
-            "res2_price",
-            "res2_pips",
-            "res2_conf",
-            "sup1_price",
-            "sup1_pips",
-            "sup1_conf",
-            "sup2_price",
-            "sup2_pips",
-            "sup2_conf",
+            "above_levels",
+            "below_levels",
+            "selected_levels",
+            "confluence_hits",
         ]
         return [col for col in focused if col in df.columns]
 
     focused = [
         "asof_time",
         "symbol",
+        "trade_status",
+        "next_threshold_event_time",
+        "next_threshold_event_importance",
+        "next_threshold_event_name",
+        "next_event_time",
+        "next_event_importance",
+        "next_event_name",
         "current_price",
         "nearest_ib",
         "nearest_ib_price",
@@ -123,6 +175,51 @@ def _build_metrics(df: pd.DataFrame) -> list[tuple[str, str, str]]:
     if "asof_time" in df.columns and not df.empty:
         updated = _format_timestamp(df["asof_time"].max())
 
+    if _is_calendar_status_view(df):
+        blocked = int(df["trade_status"].astype(str).str.lower().eq("blocked").sum()) if "trade_status" in df.columns else 0
+        watch = 0
+        if "upcoming_threshold_event_count_48h" in df.columns:
+            watch = int((pd.to_numeric(df["upcoming_threshold_event_count_48h"], errors="coerce").fillna(0) > 0).sum())
+        pair_events = 0
+        if "upcoming_event_count_48h" in df.columns:
+            pair_events = int(pd.to_numeric(df["upcoming_event_count_48h"], errors="coerce").fillna(0).sum())
+        next_due = ""
+        for col in ["active_event_time", "next_threshold_event_time", "next_event_time"]:
+            if col in df.columns:
+                series = pd.to_datetime(df[col], utc=True, errors="coerce").dropna()
+                if not series.empty:
+                    next_due = _format_timestamp(series.min())
+                    break
+        return [
+            ("Pairs", f"{symbols}", "monitored instruments"),
+            ("Blocked", f"{blocked}", "blocked right now"),
+            ("Watchlist", f"{watch}", "pairs with threshold events ahead"),
+            ("Pair-events", f"{pair_events}", "pair/event links in 48h"),
+            ("Next due", next_due or "n/a", "nearest relevant calendar time"),
+            ("Updated", updated or "n/a", "latest snapshot"),
+        ]
+
+    if _is_calendar_events_view(df):
+        high = int(df["event_importance"].astype(str).str.lower().eq("high").sum()) if "event_importance" in df.columns else 0
+        threshold_events = int(df["event_status"].astype(str).str.lower().isin(["blocking", "watch"]).sum()) if "event_status" in df.columns else 0
+        blocking = int(df["event_status"].astype(str).str.lower().eq("blocking").sum()) if "event_status" in df.columns else 0
+        affected_pairs = 0
+        if "affected_symbol_count" in df.columns:
+            affected_pairs = int(pd.to_numeric(df["affected_symbol_count"], errors="coerce").fillna(0).sum())
+        next_due = ""
+        if "event_time" in df.columns:
+            series = pd.to_datetime(df["event_time"], utc=True, errors="coerce").dropna()
+            if not series.empty:
+                next_due = _format_timestamp(series.min())
+        return [
+            ("Events", f"{rows}", "upcoming calendar rows"),
+            ("High", f"{high}", "high-impact events"),
+            ("Watch", f"{threshold_events}", "medium/high threshold matches"),
+            ("Blocking", f"{blocking}", "blocking now"),
+            ("Affected", f"{affected_pairs}", "symbol-event links"),
+            ("Next due", next_due or "n/a", "nearest event time"),
+        ]
+
     if _is_matrix_view(df):
         selected = _metric_value(df, "selected_levels")
         confluences = _metric_value(df, "confluence_hits")
@@ -150,9 +247,11 @@ def _build_metrics(df: pd.DataFrame) -> list[tuple[str, str, str]]:
 
 def _status_badge(value) -> str:
     text = "" if pd.isna(value) else str(value)
-    if text in {"fresh", "tested", "crossed"}:
-        return f'<span class="badge {html.escape(text)}">{html.escape(text)}</span>'
-    if text.lower() in {"ib", "poc", "poc+ib", "+ib", "+poc"}:
+    token = text.lower()
+    if token in {"fresh", "tested", "crossed", "open", "blocked", "blocking", "watch", "info", "low", "medium", "high"}:
+        klass = "blocked" if token == "blocking" else token
+        return f'<span class="badge {html.escape(klass)}">{html.escape(text)}</span>'
+    if token in {"ib", "poc", "poc+ib", "+ib", "+poc"}:
         return f'<span class="badge marker">{html.escape(text)}</span>'
     return html.escape(text)
 
@@ -161,14 +260,14 @@ def _format_cell(value, col: str, symbol: str | None = None) -> str:
     if pd.isna(value):
         return ""
 
-    if col == "asof_time":
+    if col == "asof_time" or col.endswith("_time") or col == "event_time":
         return _format_timestamp(value)
 
-    if col.endswith("_status") or col == "status" or col.endswith("_conf") or col.endswith("_marker"):
+    if col.endswith("_status") or col == "status" or col in {"trade_status", "event_status"} or col.endswith("_conf") or col.endswith("_marker") or col.endswith("_importance"):
         return _status_badge(value)
 
-    if col == "signal_summary":
-        return html.escape(str(value))
+    if col in {"signal_summary", "block_reason", "active_events", "upcoming_events_48h", "affected_symbols", "above_levels", "below_levels"}:
+        return html.escape(str(value)).replace("\n", "<br>")
 
     if col in {"symbol", "instrument", "table_type", "source_table_type"} or col.endswith("_name") or col in {"direction", "level_family", "level_period"}:
         return html.escape(str(value))
@@ -193,9 +292,9 @@ def _format_cell(value, col: str, symbol: str | None = None) -> str:
 
 
 def _column_type(df: pd.DataFrame, col: str) -> str:
-    if col == "asof_time":
+    if col == "asof_time" or col.endswith("_time") or col == "event_time":
         return "date"
-    if col.endswith("_status") or col == "status" or col.endswith("_conf") or col.endswith("_marker"):
+    if col.endswith("_status") or col == "status" or col in {"trade_status", "event_status"} or col.endswith("_conf") or col.endswith("_marker") or col.endswith("_importance"):
         return "status"
     if col.endswith("_price") or col in {"current_price", "last_price", "level_price", "zone_low", "zone_high"}:
         return "number"
@@ -221,6 +320,21 @@ def _table_rows(df: pd.DataFrame) -> str:
     for _, row in df.iterrows():
         symbol = _row_symbol(row)
         cells = []
+        row_classes = []
+        trade_status = str(row.get("trade_status", "")).lower() if hasattr(row, "get") else ""
+        event_status = str(row.get("event_status", "")).lower() if hasattr(row, "get") else ""
+        upcoming_threshold_count = 0.0
+        if hasattr(row, "get"):
+            try:
+                upcoming_threshold_count = float(row.get("upcoming_threshold_event_count_48h", 0) or 0)
+            except Exception:
+                upcoming_threshold_count = 0.0
+
+        if trade_status == "blocked" or event_status == "blocking":
+            row_classes.append("row-blocked")
+        elif event_status == "watch" or upcoming_threshold_count > 0:
+            row_classes.append("row-watch")
+
         for col in df.columns:
             value = row[col]
             display = _format_cell(value, col, symbol=str(symbol) if symbol is not None else None)
@@ -234,10 +348,15 @@ def _table_rows(df: pd.DataFrame) -> str:
                 cell_class.append("number-cell")
             if col.endswith("_pips") or col.endswith("_score") or col in {"rank", "fresh_levels", "tested_levels", "crossed_levels", "total_levels", "touch_count"}:
                 cell_class.append("number-cell")
+            if col in {"signal_summary", "block_reason", "active_events", "upcoming_events_48h", "affected_symbols", "event_name", "above_levels", "below_levels"} or col.endswith("_name"):
+                cell_class.append("text-cell")
+            if col in {"above_levels", "below_levels"}:
+                cell_class.append("level-list-cell")
             class_attr = f' class="{" ".join(cell_class)}"' if cell_class else ""
             data_sort = html.escape(raw, quote=True)
             cells.append(f'<td{class_attr} data-sort="{data_sort}">{display}</td>')
-        rows.append("<tr>" + "".join(cells) + "</tr>")
+        row_class_attr = f' class="{" ".join(row_classes)}"' if row_classes else ""
+        rows.append(f"<tr{row_class_attr}>" + "".join(cells) + "</tr>")
     return "\n".join(rows)
 
 
@@ -263,10 +382,30 @@ def dataframe_to_html(df: pd.DataFrame, title: str) -> str:
         for label, value, note in _build_metrics(df)
     )
 
+    if _is_calendar_status_view(df):
+        subtitle = "Pair-level trading guardrail view showing what is blocked now and what is coming next."
+    elif _is_calendar_events_view(df):
+        subtitle = "Event-level calendar feed for the monitored pairs, including quiet-window timing and affected symbols."
     if _is_matrix_view(df):
         subtitle = "Offline matrix snapshot showing fresh, untested support and resistance levels."
-    else:
+    elif not (_is_calendar_status_view(df) or _is_calendar_events_view(df)):
         subtitle = "Offline dashboard snapshot generated from local parquet data."
+
+    if _is_calendar_status_view(df) or _is_calendar_events_view(df):
+        legend_html = """
+                <span class="badge blocked">Blocked</span>
+                <span class="badge open">Open</span>
+                <span class="badge watch">Watch</span>
+                <span class="badge high">High</span>
+                <span class="badge medium">Medium</span>
+                <span class="badge low">Low</span>
+        """.strip()
+    else:
+        legend_html = """
+                <span class="badge fresh">Fresh</span>
+                <span class="badge tested">Tested</span>
+                <span class="badge crossed">Crossed</span>
+        """.strip()
 
     return f"""<!doctype html>
 <html lang="en">
@@ -288,6 +427,12 @@ def dataframe_to_html(df: pd.DataFrame, title: str) -> str:
     --fresh: #86efac;
     --tested: #fde68a;
     --crossed: #fda4af;
+    --blocked: #fda4af;
+    --open: #86efac;
+    --watch: #93c5fd;
+    --low: #cbd5e1;
+    --medium: #fde68a;
+    --high: #fca5a5;
 }}
 * {{
     box-sizing: border-box;
@@ -460,6 +605,36 @@ body {{
     color: var(--accent);
     border-color: rgba(125, 211, 252, 0.25);
 }}
+.badge.open {{
+    background: rgba(134, 239, 172, 0.16);
+    color: var(--open);
+    border-color: rgba(134, 239, 172, 0.25);
+}}
+.badge.blocked {{
+    background: rgba(253, 164, 175, 0.16);
+    color: var(--blocked);
+    border-color: rgba(253, 164, 175, 0.25);
+}}
+.badge.watch {{
+    background: rgba(147, 197, 253, 0.16);
+    color: var(--watch);
+    border-color: rgba(147, 197, 253, 0.25);
+}}
+.badge.low {{
+    background: rgba(203, 213, 225, 0.12);
+    color: var(--low);
+    border-color: rgba(203, 213, 225, 0.18);
+}}
+.badge.medium {{
+    background: rgba(253, 230, 138, 0.16);
+    color: var(--medium);
+    border-color: rgba(253, 230, 138, 0.25);
+}}
+.badge.high {{
+    background: rgba(252, 165, 165, 0.16);
+    color: var(--high);
+    border-color: rgba(252, 165, 165, 0.25);
+}}
 .table-shell {{
     border: 1px solid var(--border);
     border-radius: 22px;
@@ -506,6 +681,12 @@ body {{
 .report-table tbody tr:hover td {{
     background: rgba(125, 211, 252, 0.08);
 }}
+.report-table tbody tr.row-blocked td {{
+    background: rgba(127, 29, 29, 0.22);
+}}
+.report-table tbody tr.row-watch td {{
+    background: rgba(30, 64, 175, 0.14);
+}}
 .report-table td.number-cell {{
     text-align: right;
     font-variant-numeric: tabular-nums;
@@ -516,6 +697,15 @@ body {{
 }}
 .report-table td.status-cell {{
     white-space: nowrap;
+}}
+.report-table td.text-cell {{
+    white-space: normal;
+    min-width: 180px;
+    line-height: 1.45;
+}}
+.report-table td.level-list-cell {{
+    min-width: 220px;
+    max-width: 280px;
 }}
 .report-table th.sorted-asc::after {{
     content: " ^";
@@ -575,9 +765,7 @@ body {{
             </div>
             <div class="pill" id="row-count">Showing {len(display_df)} rows</div>
             <div class="status-legend">
-                <span class="badge fresh">Fresh</span>
-                <span class="badge tested">Tested</span>
-                <span class="badge crossed">Crossed</span>
+                {legend_html}
             </div>
         </section>
 

@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FX Level Engine Report Hub</title>
+  <style>
+    :root {
+      --bg: #f4efe5;
+      --panel: rgba(255, 252, 246, 0.94);
+      --panel-strong: #fffaf0;
+      --section: rgba(255, 255, 255, 0.52);
+      --text: #1f2b24;
+      --muted: #5e6d64;
+      --line: rgba(31, 43, 36, 0.12);
+      --accent: #1b7f5b;
+      --accent-strong: #0e5b40;
+      --accent-soft: rgba(27, 127, 91, 0.1);
+      --shadow: 0 18px 50px rgba(31, 43, 36, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(27, 127, 91, 0.16), transparent 34%),
+        radial-gradient(circle at top right, rgba(201, 126, 40, 0.14), transparent 28%),
+        linear-gradient(180deg, #f7f1e7 0%, #efe6d7 100%);
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: min(1160px, calc(100% - 32px));
+      margin: 36px auto;
+      padding: 28px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 0 0 24px;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .jumpnav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 0 0 28px;
+    }
+
+    .jumpnav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(14, 91, 64, 0.14);
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--accent-strong);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .jumpnav a:hover {
+      background: var(--accent-soft);
+    }
+
+    .section {
+      margin-top: 22px;
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: var(--section);
+    }
+
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: end;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .section-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 38px);
+      line-height: 1.05;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .section p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 760px;
+    }
+
+    .section-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+      padding: 20px;
+      border-radius: 20px;
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 24px rgba(31, 43, 36, 0.08);
+    }
+
+    .card small {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .card h3 {
+      margin: 14px 0 10px;
+      font-size: 24px;
+      line-height: 1.15;
+    }
+
+    .card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(27, 127, 91, 0.08);
+      border: 1px solid rgba(14, 91, 64, 0.1);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .button:hover {
+      background: var(--accent-strong);
+      transform: translateY(-1px);
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--accent-strong);
+      border: 1px solid rgba(14, 91, 64, 0.2);
+    }
+
+    .button.secondary:hover {
+      background: rgba(27, 127, 91, 0.08);
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .notes {
+      margin-top: 24px;
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .note {
+      padding: 18px 20px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    .note h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .note p,
+    .note li {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .note ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+      background: rgba(31, 43, 36, 0.06);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: calc(100% - 20px);
+        margin: 10px auto;
+        padding: 20px;
+      }
+
+      .section {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="eyebrow">FX Level Engine</div>
+    <h1>Open reports without losing the hub.</h1>
+    <p class="lead">
+      This page is the simplest browser starting point. Every report link below opens in a new tab
+      so the hub stays available. If you want to refresh data first, double-click
+      <code>RUN_AND_OPEN_REPORTS.cmd</code> in the project root.
+    </p>
+
+    <nav class="jumpnav">
+      <a href="#calendar">Calendar</a>
+      <a href="#intraday">Intraday</a>
+      <a href="#swing">Swing</a>
+      <a href="#invest">Invest</a>
+    </nav>
+
+<section class="section" id="calendar">
+      <div class="section-header">
+        <div>
+          <span class="section-label">Overview</span>
+          <h2>Calendar</h2>
+        </div>
+        <p>Global tradeability status and upcoming event details across the configured instruments.</p>
+      </div>
+      <div class="section-grid">
+<article class="card">
+          <div>
+            <small>Status</small>
+            <h3>Calendar Status</h3>
+            <p>See which pairs are open, blocked, or on watch because of relevant economic news.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 17:33 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button" href="data/tables/calendar_status.html" target="_blank" rel="noopener noreferrer">Open status</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+<article class="card">
+          <div>
+            <small>Events</small>
+            <h3>Calendar Events</h3>
+            <p>Detailed list of upcoming events, quiet windows, and affected symbols.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">19 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 17:33 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button" href="data/tables/calendar_events.html" target="_blank" rel="noopener noreferrer">Open events</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+      </div>
+    </section>
+
+<section class="section" id="intraday">
+      <div class="section-header">
+        <div>
+          <span class="section-label">Trading Horizon</span>
+          <h2>Intraday</h2>
+        </div>
+        <p>Main intraday level view plus the POC and IB matrix snapshots for faster scanning.</p>
+      </div>
+      <div class="section-grid">
+<article class="card">
+          <div>
+            <small>Primary View</small>
+            <h3>Intraday Levels</h3>
+            <p>Main intraday report with nearest supports, resistances, and calendar context.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 17:28 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button" href="data/tables/intraday_view.html" target="_blank" rel="noopener noreferrer">Open intraday</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+<article class="card">
+          <div>
+            <small>Matrix</small>
+            <h3>Intraday POC Matrix</h3>
+            <p>Fresh intraday POC supports and resistances with compact side-by-side distance view.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 17:33 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button secondary" href="data/tables/poc_matrix_view.html" target="_blank" rel="noopener noreferrer">Open POC matrix</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+<article class="card">
+          <div>
+            <small>Matrix</small>
+            <h3>Intraday IB Matrix</h3>
+            <p>Fresh intraday IB supports and resistances across the full configured instrument set.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 17:31 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button secondary" href="data/tables/ib_matrix_view.html" target="_blank" rel="noopener noreferrer">Open IB matrix</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+      </div>
+    </section>
+
+<section class="section" id="swing">
+      <div class="section-header">
+        <div>
+          <span class="section-label">Trading Horizon</span>
+          <h2>Swing</h2>
+        </div>
+        <p>Swing-level report family with the same structure as intraday, but built from the swing table scope.</p>
+      </div>
+      <div class="section-grid">
+<article class="card">
+          <div>
+            <small>Primary View</small>
+            <h3>Swing Levels</h3>
+            <p>Higher-timeframe level report with calendar-aware status and next-event context.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 15:35 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button" href="data/tables/swing_view.html" target="_blank" rel="noopener noreferrer">Open swing</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+<article class="card">
+          <div>
+            <small>Matrix</small>
+            <h3>Swing POC Matrix</h3>
+            <p>Fresh swing POC support and resistance slots in the compact matrix layout.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 17:33 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button secondary" href="data/tables/swing_poc_matrix_view.html" target="_blank" rel="noopener noreferrer">Open swing POC</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+<article class="card">
+          <div>
+            <small>Matrix</small>
+            <h3>Swing IB Matrix</h3>
+            <p>Fresh swing IB support and resistance slots for the configured instrument universe.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 17:31 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button secondary" href="data/tables/swing_ib_matrix_view.html" target="_blank" rel="noopener noreferrer">Open swing IB</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+      </div>
+    </section>
+
+<section class="section" id="invest">
+      <div class="section-header">
+        <div>
+          <span class="section-label">Trading Horizon</span>
+          <h2>Invest</h2>
+        </div>
+        <p>Longer-horizon report family for broader support and resistance inspection.</p>
+      </div>
+      <div class="section-grid">
+<article class="card">
+          <div>
+            <small>Primary View</small>
+            <h3>Invest Levels</h3>
+            <p>Longer-horizon level report with calendar context and key structural levels.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 15:35 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button" href="data/tables/invest_view.html" target="_blank" rel="noopener noreferrer">Open invest</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+<article class="card">
+          <div>
+            <small>Matrix</small>
+            <h3>Invest POC Matrix</h3>
+            <p>Longer-horizon POC matrix view for scanning fresh invest-table POC levels.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 17:33 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button secondary" href="data/tables/invest_poc_matrix_view.html" target="_blank" rel="noopener noreferrer">Open invest POC</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+<article class="card">
+          <div>
+            <small>Matrix</small>
+            <h3>Invest IB Matrix</h3>
+            <p>Longer-horizon IB matrix view for the invest table family and configured symbols.</p>
+            <div class="stats">
+              <span class="stat-pill">15 instruments</span>
+              <span class="stat-pill">15 rows</span>
+              <span class="stat-pill">Updated 2026-03-28 17:31 UTC</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <a class="button secondary" href="data/tables/invest_ib_matrix_view.html" target="_blank" rel="noopener noreferrer">Open invest IB</a>
+          </div>
+          <div class="hint">Opens in a new tab.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="notes">
+      <article class="note">
+        <h3>One-click usage</h3>
+        <ul>
+          <li>Double-click <code>OPEN_REPORT_HUB.cmd</code> to open this hub.</li>
+          <li>Double-click <code>RUN_AND_OPEN_REPORTS.cmd</code> to refresh data and then open reports.</li>
+        </ul>
+      </article>
+
+      <article class="note">
+        <h3>If a rebuild fails</h3>
+        <p>
+          Close any open CSV or HTML preview tabs that may lock files in <code>data/tables</code>,
+          then run <code>RUN_AND_OPEN_REPORTS.cmd</code> again.
+        </p>
+      </article>
+
+      <article class="note">
+        <h3>Session notes</h3>
+        <p>
+          The current handoff summary is stored in <code>SESSION_HANDOFF.md</code>.
+        </p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

@@ -73,23 +73,54 @@ def _first_two_months_of_year(df_d1: pd.DataFrame) -> tuple[pd.Timestamp, pd.Tim
     return pd.Timestamp(anchor["timestamp"].min()), pd.Timestamp(anchor["timestamp"].max()), anchor
 
 
-def _project_levels(period_code: str, ib_high: float, ib_low: float, multipliers: list[float]) -> dict[str, float]:
+def _ib_period_config(settings: dict, period_code: str) -> dict:
+    ib_settings = settings.get("ib", {}) or {}
+    period_settings = (ib_settings.get("periods") or {}).get(period_code, {}) or {}
+    fallback_multipliers = [float(x) for x in ib_settings.get("multipliers", [1.0, 1.5, 2.0, 3.0])]
+    multipliers = [float(x) for x in period_settings.get("multipliers", fallback_multipliers)]
+    return {
+        "enabled": bool(period_settings.get("enabled", True)),
+        "include_low_high": bool(period_settings.get("include_low_high", True)),
+        "include_mid": bool(period_settings.get("include_mid", True)),
+        "multipliers": multipliers,
+    }
+
+
+def enabled_ib_periods(settings: dict) -> list[str]:
+    return [period for period in ["W", "M", "Y"] if _ib_period_config(settings, period).get("enabled", True)]
+
+
+def _multiplier_label(mult: float) -> str:
+    value = float(mult) * 100.0
+    if value.is_integer():
+        return str(int(value))
+    return str(round(value, 2)).replace(".0", "")
+
+
+def _project_levels(period_code: str, ib_high: float, ib_low: float, period_config: dict) -> dict[str, float]:
     width = ib_high - ib_low
     midpoint = (ib_high + ib_low) / 2.0
-    levels: dict[str, float] = {
-        f"{period_code}_IB_HIGH": ib_high,
-        f"{period_code}_IB_LOW": ib_low,
-        f"{period_code}_IB_MID": midpoint,
-    }
-    for mult in multipliers:
-        tag = str(mult).replace(".0", "").replace(".", "_")
-        levels[f"{period_code}_IB_{tag}_UP"] = ib_high + width * mult
-        levels[f"{period_code}_IB_{tag}_DOWN"] = ib_low - width * mult
+    levels: dict[str, float] = {}
+
+    if period_config.get("include_low_high", True):
+        levels[f"{period_code} IB HIGH"] = ib_high
+        levels[f"{period_code} IB LOW"] = ib_low
+
+    if period_config.get("include_mid", True):
+        levels[f"{period_code} IB MID"] = midpoint
+
+    for mult in period_config.get("multipliers", []):
+        tag = _multiplier_label(mult)
+        levels[f"{period_code} IB {tag}"] = ib_high + width * float(mult)
+        levels[f"{period_code} IB -{tag}"] = ib_low - width * float(mult)
+
     return levels
 
 
 def calculate_active_ib(df_m30: pd.DataFrame, df_d1: pd.DataFrame, period_code: str, settings: dict) -> IBResult:
-    multipliers = [float(x) for x in settings["ib"]["multipliers"]]
+    period_config = _ib_period_config(settings, period_code)
+    if not period_config.get("enabled", True):
+        raise ValueError(f"IB period {period_code} is disabled in settings")
 
     if period_code == "W":
         key, week_df = _current_week_group(df_m30)
@@ -108,7 +139,7 @@ def calculate_active_ib(df_m30: pd.DataFrame, df_d1: pd.DataFrame, period_code: 
 
     ib_high = float(anchor["high"].max())
     ib_low = float(anchor["low"].min())
-    levels = _project_levels(period_code, ib_high, ib_low, multipliers)
+    levels = _project_levels(period_code, ib_high, ib_low, period_config)
 
     return IBResult(
         period_code=period_code,

@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Economic calendar events</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+    --bg: #07111d;
+    --bg-soft: #0d1726;
+    --surface: rgba(12, 18, 32, 0.88);
+    --surface-2: rgba(17, 24, 39, 0.96);
+    --border: rgba(148, 163, 184, 0.16);
+    --text: #e5eef8;
+    --muted: #98a8be;
+    --accent: #7dd3fc;
+    --accent-strong: #38bdf8;
+    --fresh: #86efac;
+    --tested: #fde68a;
+    --crossed: #fda4af;
+    --blocked: #fda4af;
+    --open: #86efac;
+    --watch: #93c5fd;
+    --low: #cbd5e1;
+    --medium: #fde68a;
+    --high: #fca5a5;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 32%),
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.09), transparent 28%),
+        linear-gradient(180deg, #050b14 0%, var(--bg) 45%, #09121d 100%);
+    font-family: "Aptos", "Segoe UI", "Trebuchet MS", sans-serif;
+}
+.shell {
+    max-width: 1560px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+.hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: flex-end;
+    margin-bottom: 18px;
+}
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.12);
+    color: #c8efff;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.title {
+    margin: 14px 0 10px;
+    font-size: clamp(30px, 3.8vw, 58px);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+}
+.subtitle {
+    margin: 0;
+    color: var(--muted);
+    max-width: 68ch;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.hero-meta {
+    text-align: right;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+.hero-meta strong {
+    color: var(--text);
+}
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 24px 0 18px;
+}
+.metric-card {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(11, 16, 28, 0.94));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 16px 16px 14px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+}
+.metric-label {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+}
+.metric-value {
+    margin-top: 8px;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+.metric-note {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 13px;
+}
+.toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 18px 0 14px;
+}
+.search-wrap {
+    flex: 1 1 360px;
+    position: relative;
+}
+.search-wrap input {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: rgba(6, 12, 20, 0.76);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 14px 16px 14px 44px;
+    font-size: 14px;
+    outline: none;
+}
+.search-wrap input:focus {
+    border-color: rgba(125, 211, 252, 0.6);
+    box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.12);
+}
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+}
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    font-size: 13px;
+}
+.status-legend {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 72px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.badge.fresh {
+    background: rgba(134, 239, 172, 0.16);
+    color: var(--fresh);
+    border-color: rgba(134, 239, 172, 0.25);
+}
+.badge.tested {
+    background: rgba(253, 230, 138, 0.16);
+    color: var(--tested);
+    border-color: rgba(253, 230, 138, 0.25);
+}
+.badge.crossed {
+    background: rgba(253, 164, 175, 0.16);
+    color: var(--crossed);
+    border-color: rgba(253, 164, 175, 0.25);
+}
+.badge.marker {
+    background: rgba(125, 211, 252, 0.16);
+    color: var(--accent);
+    border-color: rgba(125, 211, 252, 0.25);
+}
+.badge.open {
+    background: rgba(134, 239, 172, 0.16);
+    color: var(--open);
+    border-color: rgba(134, 239, 172, 0.25);
+}
+.badge.blocked {
+    background: rgba(253, 164, 175, 0.16);
+    color: var(--blocked);
+    border-color: rgba(253, 164, 175, 0.25);
+}
+.badge.watch {
+    background: rgba(147, 197, 253, 0.16);
+    color: var(--watch);
+    border-color: rgba(147, 197, 253, 0.25);
+}
+.badge.low {
+    background: rgba(203, 213, 225, 0.12);
+    color: var(--low);
+    border-color: rgba(203, 213, 225, 0.18);
+}
+.badge.medium {
+    background: rgba(253, 230, 138, 0.16);
+    color: var(--medium);
+    border-color: rgba(253, 230, 138, 0.25);
+}
+.badge.high {
+    background: rgba(252, 165, 165, 0.16);
+    color: var(--high);
+    border-color: rgba(252, 165, 165, 0.25);
+}
+.table-shell {
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(8, 14, 25, 0.88), rgba(5, 10, 18, 0.92));
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+.table-scroll {
+    overflow: auto;
+    max-height: min(72vh, 960px);
+}
+.report-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 100%;
+}
+.report-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(10, 16, 28, 0.98));
+    color: var(--accent);
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 15px 14px;
+    border-bottom: 1px solid rgba(125, 211, 252, 0.14);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+.report-table tbody td {
+    padding: 14px 14px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    color: var(--text);
+    vertical-align: top;
+    white-space: nowrap;
+}
+.report-table tbody tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.015);
+}
+.report-table tbody tr:hover td {
+    background: rgba(125, 211, 252, 0.08);
+}
+.report-table tbody tr.row-blocked td {
+    background: rgba(127, 29, 29, 0.22);
+}
+.report-table tbody tr.row-watch td {
+    background: rgba(30, 64, 175, 0.14);
+}
+.report-table td.number-cell {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.report-table td.symbol-cell {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+.report-table td.status-cell {
+    white-space: nowrap;
+}
+.report-table td.text-cell {
+    white-space: normal;
+    min-width: 180px;
+    line-height: 1.45;
+}
+.report-table td.level-list-cell {
+    min-width: 220px;
+    max-width: 280px;
+}
+.report-table th.sorted-asc::after {
+    content: " ^";
+    color: var(--accent-strong);
+}
+.report-table th.sorted-desc::after {
+    content: " v";
+    color: var(--accent-strong);
+}
+.empty-state {
+    padding: 28px;
+    color: var(--muted);
+}
+.footer-note {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+@media (max-width: 900px) {
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .hero-meta {
+        text-align: left;
+    }
+    .table-scroll {
+        max-height: none;
+    }
+}
+</style>
+</head>
+<body>
+    <div class="shell">
+        <section class="hero">
+            <div>
+                <div class="eyebrow">FX level engine dashboard</div>
+                <h1 class="title">Economic calendar events</h1>
+                <p class="subtitle">Event-level calendar feed for the monitored pairs, including quiet-window timing and affected symbols.</p>
+            </div>
+            <div class="hero-meta">
+                <div><strong>Mode:</strong> offline self-contained report</div>
+                <div><strong>Rows:</strong> 19</div>
+                <div><strong>Columns:</strong> 13</div>
+            </div>
+        </section>
+
+        <section class="metrics">
+            <div class="metric-card">
+            <div class="metric-label">Events</div>
+            <div class="metric-value">19</div>
+            <div class="metric-note">upcoming calendar rows</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">High</div>
+            <div class="metric-value">0</div>
+            <div class="metric-note">high-impact events</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Watch</div>
+            <div class="metric-value">8</div>
+            <div class="metric-note">medium/high threshold matches</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Blocking</div>
+            <div class="metric-value">0</div>
+            <div class="metric-note">blocking now</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Affected</div>
+            <div class="metric-value">97</div>
+            <div class="metric-note">symbol-event links</div>
+        </div>
+<div class="metric-card">
+            <div class="metric-label">Next due</div>
+            <div class="metric-value">2026-03-29 23:50 UTC</div>
+            <div class="metric-note">nearest event time</div>
+        </div>
+        </section>
+
+        <section class="toolbar">
+            <div class="search-wrap">
+                <span class="search-icon">Search</span>
+                <input id="table-search" type="search" placeholder="Search instrument, level, price or status">
+            </div>
+            <div class="pill" id="row-count">Showing 19 rows</div>
+            <div class="status-legend">
+                <span class="badge blocked">Blocked</span>
+                <span class="badge open">Open</span>
+                <span class="badge watch">Watch</span>
+                <span class="badge high">High</span>
+                <span class="badge medium">Medium</span>
+                <span class="badge low">Low</span>
+            </div>
+        </section>
+
+        <section class="table-shell">
+            <div class="table-scroll">
+                <table id="levels_table" class="report-table"><thead><tr><th data-col="event_time" data-type="date">event time</th><th data-col="event_status" data-type="status">event status</th><th data-col="event_importance" data-type="status">event importance</th><th data-col="country" data-type="text">country</th><th data-col="event_name" data-type="text">event name</th><th data-col="affected_symbol_count" data-type="number">affected symbol count</th><th data-col="affected_symbols" data-type="text">affected symbols</th><th data-col="quiet_window_start" data-type="text">quiet window start</th><th data-col="quiet_window_end" data-type="text">quiet window end</th><th data-col="forecast" data-type="text">forecast</th><th data-col="previous" data-type="text">previous</th><th data-col="actual" data-type="text">actual</th><th data-col="source" data-type="text">source</th></tr></thead><tbody><tr class="row-watch"><td data-sort="2026-03-29T23:50:00+00:00">2026-03-29 23:50 UTC</td><td class="status-cell" data-sort="watch"><span class="badge watch">watch</span></td><td data-sort="medium"><span class="badge medium">medium</span></td><td data-sort="japan">japan</td><td class="text-cell" data-sort="BoJ Summary of Opinions">BoJ Summary of Opinions</td><td data-sort="6">6</td><td class="text-cell" data-sort="USD/JPY, EUR/JPY, GBP/JPY, AUD/JPY, CAD/JPY, CHF/JPY">USD/JPY, EUR/JPY, GBP/JPY, AUD/JPY, CAD/JPY, CHF/JPY</td><td data-sort="2026-03-29T23:20:00+00:00">2026-03-29T23:20:00+00:00</td><td data-sort="2026-03-30T00:20:00+00:00">2026-03-30T00:20:00+00:00</td><td data-sort=""></td><td data-sort=""></td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-30T05:00:00+00:00">2026-03-30 05:00 UTC</td><td class="status-cell" data-sort="watch"><span class="badge watch">watch</span></td><td data-sort="medium"><span class="badge medium">medium</span></td><td data-sort="japan">japan</td><td class="text-cell" data-sort="Housing Starts YoY">Housing Starts YoY</td><td data-sort="6">6</td><td class="text-cell" data-sort="USD/JPY, EUR/JPY, GBP/JPY, AUD/JPY, CAD/JPY, CHF/JPY">USD/JPY, EUR/JPY, GBP/JPY, AUD/JPY, CAD/JPY, CHF/JPY</td><td data-sort="2026-03-30T04:30:00+00:00">2026-03-30T04:30:00+00:00</td><td data-sort="2026-03-30T05:30:00+00:00">2026-03-30T05:30:00+00:00</td><td data-sort="-4.7%">-4.7%</td><td data-sort="-0.4%">-0.4%</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td class="status-cell" data-sort="watch"><span class="badge watch">watch</span></td><td data-sort="medium"><span class="badge medium">medium</span></td><td data-sort="united kingdom">united kingdom</td><td class="text-cell" data-sort="BoE Consumer Credit">BoE Consumer Credit</td><td data-sort="4">4</td><td class="text-cell" data-sort="GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF">GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF</td><td data-sort="2026-03-30T08:00:00+00:00">2026-03-30T08:00:00+00:00</td><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30T09:00:00+00:00</td><td data-sort="£1.3B">£1.3B</td><td data-sort="£1.812B">£1.812B</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td class="status-cell" data-sort="watch"><span class="badge watch">watch</span></td><td data-sort="medium"><span class="badge medium">medium</span></td><td data-sort="united kingdom">united kingdom</td><td class="text-cell" data-sort="Mortgage Approvals">Mortgage Approvals</td><td data-sort="4">4</td><td class="text-cell" data-sort="GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF">GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF</td><td data-sort="2026-03-30T08:00:00+00:00">2026-03-30T08:00:00+00:00</td><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30T09:00:00+00:00</td><td data-sort="61K">61K</td><td data-sort="60K">60K</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td class="status-cell" data-sort="watch"><span class="badge watch">watch</span></td><td data-sort="medium"><span class="badge medium">medium</span></td><td data-sort="united kingdom">united kingdom</td><td class="text-cell" data-sort="Mortgage Lending">Mortgage Lending</td><td data-sort="4">4</td><td class="text-cell" data-sort="GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF">GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF</td><td data-sort="2026-03-30T08:00:00+00:00">2026-03-30T08:00:00+00:00</td><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30T09:00:00+00:00</td><td data-sort="£4.4B">£4.4B</td><td data-sort="£4.08B">£4.08B</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td class="status-cell" data-sort="watch"><span class="badge watch">watch</span></td><td data-sort="medium"><span class="badge medium">medium</span></td><td data-sort="euro area">euro area</td><td class="text-cell" data-sort="Economic Sentiment">Economic Sentiment</td><td data-sort="4">4</td><td class="text-cell" data-sort="EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF">EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF</td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30T08:30:00+00:00</td><td data-sort="2026-03-30T09:30:00+00:00">2026-03-30T09:30:00+00:00</td><td data-sort="96.5">96.5</td><td data-sort="98.3">98.3</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-30T14:30:00+00:00">2026-03-30 14:30 UTC</td><td class="status-cell" data-sort="watch"><span class="badge watch">watch</span></td><td data-sort="medium"><span class="badge medium">medium</span></td><td data-sort="united states">united states</td><td class="text-cell" data-sort="Dallas Fed Manufacturing Index">Dallas Fed Manufacturing Index</td><td data-sort="7">7</td><td class="text-cell" data-sort="EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD">EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD</td><td data-sort="2026-03-30T14:00:00+00:00">2026-03-30T14:00:00+00:00</td><td data-sort="2026-03-30T15:00:00+00:00">2026-03-30T15:00:00+00:00</td><td data-sort="0.7">0.7</td><td data-sort="0.2">0.2</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr class="row-watch"><td data-sort="2026-03-30T14:30:00+00:00">2026-03-30 14:30 UTC</td><td class="status-cell" data-sort="watch"><span class="badge watch">watch</span></td><td data-sort="medium"><span class="badge medium">medium</span></td><td data-sort="united states">united states</td><td class="text-cell" data-sort="Fed Chair Powell Speech">Fed Chair Powell Speech</td><td data-sort="7">7</td><td class="text-cell" data-sort="EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD">EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD</td><td data-sort="2026-03-30T14:00:00+00:00">2026-03-30T14:00:00+00:00</td><td data-sort="2026-03-30T15:00:00+00:00">2026-03-30T15:00:00+00:00</td><td data-sort=""></td><td data-sort=""></td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T05:00:00+00:00">2026-03-30 05:00 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="japan">japan</td><td class="text-cell" data-sort="Construction Orders YoY">Construction Orders YoY</td><td data-sort="6">6</td><td class="text-cell" data-sort="USD/JPY, EUR/JPY, GBP/JPY, AUD/JPY, CAD/JPY, CHF/JPY">USD/JPY, EUR/JPY, GBP/JPY, AUD/JPY, CAD/JPY, CHF/JPY</td><td data-sort="2026-03-30T04:30:00+00:00">2026-03-30T04:30:00+00:00</td><td data-sort="2026-03-30T05:30:00+00:00">2026-03-30T05:30:00+00:00</td><td data-sort="3.0%">3.0%</td><td data-sort="5.7%">5.7%</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="united kingdom">united kingdom</td><td class="text-cell" data-sort="M4 Money Supply MoM">M4 Money Supply MoM</td><td data-sort="4">4</td><td class="text-cell" data-sort="GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF">GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF</td><td data-sort="2026-03-30T08:00:00+00:00">2026-03-30T08:00:00+00:00</td><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30T09:00:00+00:00</td><td data-sort="0.1%">0.1%</td><td data-sort="-0.1%">-0.1%</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30 08:30 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="united kingdom">united kingdom</td><td class="text-cell" data-sort="Net Lending to Individuals MoM">Net Lending to Individuals MoM</td><td data-sort="4">4</td><td class="text-cell" data-sort="GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF">GBP/USD, EUR/GBP, GBP/JPY, GBP/CHF</td><td data-sort="2026-03-30T08:00:00+00:00">2026-03-30T08:00:00+00:00</td><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30T09:00:00+00:00</td><td data-sort="£5.6B">£5.6B</td><td data-sort="£5.9B">£5.9B</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="euro area">euro area</td><td class="text-cell" data-sort="Consumer Confidence Final">Consumer Confidence Final</td><td data-sort="4">4</td><td class="text-cell" data-sort="EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF">EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF</td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30T08:30:00+00:00</td><td data-sort="2026-03-30T09:30:00+00:00">2026-03-30T09:30:00+00:00</td><td data-sort="-16.3">-16.3</td><td data-sort="-12.2">-12.2</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="euro area">euro area</td><td class="text-cell" data-sort="Consumer Inflation Expectations">Consumer Inflation Expectations</td><td data-sort="4">4</td><td class="text-cell" data-sort="EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF">EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF</td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30T08:30:00+00:00</td><td data-sort="2026-03-30T09:30:00+00:00">2026-03-30T09:30:00+00:00</td><td data-sort="32">32</td><td data-sort="25.8">25.8</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="euro area">euro area</td><td class="text-cell" data-sort="Industrial Sentiment">Industrial Sentiment</td><td data-sort="4">4</td><td class="text-cell" data-sort="EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF">EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF</td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30T08:30:00+00:00</td><td data-sort="2026-03-30T09:30:00+00:00">2026-03-30T09:30:00+00:00</td><td data-sort="-9">-9</td><td data-sort="-7.1">-7.1</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="euro area">euro area</td><td class="text-cell" data-sort="Selling Price Expectations">Selling Price Expectations</td><td data-sort="4">4</td><td class="text-cell" data-sort="EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF">EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF</td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30T08:30:00+00:00</td><td data-sort="2026-03-30T09:30:00+00:00">2026-03-30T09:30:00+00:00</td><td data-sort="15">15</td><td data-sort="11.5">11.5</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T09:00:00+00:00">2026-03-30 09:00 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="euro area">euro area</td><td class="text-cell" data-sort="Services Sentiment">Services Sentiment</td><td data-sort="4">4</td><td class="text-cell" data-sort="EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF">EUR/USD, EUR/GBP, EUR/JPY, EUR/CHF</td><td data-sort="2026-03-30T08:30:00+00:00">2026-03-30T08:30:00+00:00</td><td data-sort="2026-03-30T09:30:00+00:00">2026-03-30T09:30:00+00:00</td><td data-sort="4">4</td><td data-sort="5.0">5.0</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T13:20:00+00:00">2026-03-30 13:20 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="united states">united states</td><td class="text-cell" data-sort="NY Fed Bill Purchases 4 to 12 months">NY Fed Bill Purchases 4 to 12 months</td><td data-sort="7">7</td><td class="text-cell" data-sort="EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD">EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD</td><td data-sort="2026-03-30T12:50:00+00:00">2026-03-30T12:50:00+00:00</td><td data-sort="2026-03-30T13:50:00+00:00">2026-03-30T13:50:00+00:00</td><td data-sort="$6.726 billion">$6.726 billion</td><td data-sort=""></td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T15:30:00+00:00">2026-03-30 15:30 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="united states">united states</td><td class="text-cell" data-sort="3-Month Bill Auction">3-Month Bill Auction</td><td data-sort="7">7</td><td class="text-cell" data-sort="EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD">EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD</td><td data-sort="2026-03-30T15:00:00+00:00">2026-03-30T15:00:00+00:00</td><td data-sort="2026-03-30T16:00:00+00:00">2026-03-30T16:00:00+00:00</td><td data-sort=""></td><td data-sort="3.635%">3.635%</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr>
+<tr><td data-sort="2026-03-30T15:30:00+00:00">2026-03-30 15:30 UTC</td><td class="status-cell" data-sort="info"><span class="badge info">info</span></td><td data-sort="low"><span class="badge low">low</span></td><td data-sort="united states">united states</td><td class="text-cell" data-sort="6-Month Bill Auction">6-Month Bill Auction</td><td data-sort="7">7</td><td class="text-cell" data-sort="EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD">EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD</td><td data-sort="2026-03-30T15:00:00+00:00">2026-03-30T15:00:00+00:00</td><td data-sort="2026-03-30T16:00:00+00:00">2026-03-30T16:00:00+00:00</td><td data-sort=""></td><td data-sort="3.63%">3.63%</td><td data-sort=""></td><td data-sort="trading_economics">trading_economics</td></tr></tbody></table>
+            </div>
+        </section>
+
+        <div class="footer-note">
+            Tip: click any column header to sort. The HTML is fully self-contained, so it works offline and does not rely on CDN assets.
+        </div>
+    </div>
+
+<script>
+(function() {
+    const table = document.getElementById('levels_table');
+    const search = document.getElementById('table-search');
+    const rowCount = document.getElementById('row-count');
+    if (!table) {
+        return;
+    }
+
+    const tbody = table.tBodies[0];
+    const headers = Array.from(table.tHead.rows[0].cells);
+    let sortState = { index: -1, direction: 1 };
+    let allRows = Array.from(tbody.rows);
+
+    function normalize(value, type) {
+        const raw = (value ?? '').toString().trim();
+        if (!raw) {
+            return '';
+        }
+        if (type === 'number') {
+            const parsed = parseFloat(raw.replace(/[^0-9+\-\.]/g, ''));
+            return Number.isNaN(parsed) ? Number.NEGATIVE_INFINITY : parsed;
+        }
+        if (type === 'date') {
+            const parsed = Date.parse(raw);
+            return Number.isNaN(parsed) ? raw.toLowerCase() : parsed;
+        }
+        if (type === 'status') {
+            return raw.toLowerCase();
+        }
+        return raw.toLowerCase();
+    }
+
+    function renderRows(rows) {
+        tbody.replaceChildren(...rows);
+        allRows = rows;
+    }
+
+    function updateRowCount() {
+        const visible = allRows.filter(row => row.style.display !== 'none').length;
+        rowCount.textContent = 'Showing ' + visible + ' / ' + allRows.length + ' rows';
+    }
+
+    function sortBy(index) {
+        const header = headers[index];
+        const type = header.dataset.type || 'text';
+        const direction = sortState.index === index ? -sortState.direction : 1;
+        sortState = { index, direction };
+
+        headers.forEach(th => {
+            th.classList.remove('sorted-asc', 'sorted-desc');
+        });
+        header.classList.add(direction === 1 ? 'sorted-asc' : 'sorted-desc');
+
+        const rows = Array.from(allRows);
+        rows.sort((a, b) => {
+            const left = normalize(a.cells[index].dataset.sort || a.cells[index].textContent, type);
+            const right = normalize(b.cells[index].dataset.sort || b.cells[index].textContent, type);
+            if (left < right) return -1 * direction;
+            if (left > right) return 1 * direction;
+            return 0;
+        });
+
+        renderRows(rows);
+        applyFilter();
+    }
+
+    function applyFilter() {
+        const query = search.value.trim().toLowerCase();
+        allRows.forEach(row => {
+            const match = !query || row.textContent.toLowerCase().includes(query);
+            row.style.display = match ? '' : 'none';
+        });
+        updateRowCount();
+    }
+
+    headers.forEach((th, index) => {
+        th.addEventListener('click', () => sortBy(index));
+    });
+
+    search.addEventListener('input', applyFilter);
+    applyFilter();
+})();
+</script>
+</body>
+</html>
